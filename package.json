@@ -1,0 +1,17 @@
+{
+  "name": "ld-trailers-corinth",
+  "version": "1.0.0",
+  "description": "L&D Trailers - Heavy Duty Utility Trailer Rentals in Corinth, Mississippi",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "trailer rentals",
+    "corinth ms",
+    "utility trailers",
+    "wix studio"
+  ],
+  "author": "L&D Trailers",
+  "license": "ISC"
+}

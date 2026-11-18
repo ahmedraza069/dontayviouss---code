@@ -1,0 +1,109 @@
+// =============================================================================
+// WIX VELO BACKEND MODULE: bookings.jsw
+// L&D Trailers - Corinth, Mississippi
+// =============================================================================
+
+import wixData from 'wix-data';
+import { triggeredEmails } from 'wix-crm-backend';
+
+/**
+ * Creates a new reservation request in the 'Bookings' CMS Collection
+ * Enforces L&D Trailers review & approval workflow before rental confirmation
+ */
+export async function createBookingRequest(bookingData) {
+  try {
+    // 1. Calculate rate and separate refundable deposit
+    const pricingMap = {
+      daily: { rate: 45, deposit: 100, label: 'Daily Rental (24 Hours)' },
+      weekend: { rate: 85, deposit: 100, label: 'Weekend Rental (Fri-Sun)' },
+      '3day': { rate: 115, deposit: 100, label: '3-Day Rental (72 Hours)' },
+      weekly: { rate: 225, deposit: 150, label: 'Weekly Rental (7 Days)' },
+      monthly: { rate: 550, deposit: 200, label: 'Monthly Rental (30 Days)' }
+    };
+
+    const tier = pricingMap[bookingData.period] || pricingMap.daily;
+    const bookingNumber = 'LD-' + Math.floor(10000 + Math.random() * 90000);
+
+    const bookingItem = {
+      title: bookingNumber,
+      bookingNumber: bookingNumber,
+      customerName: bookingData.customerName,
+      phone: bookingData.phone,
+      email: bookingData.email,
+      driverLicenseInfo: bookingData.driverLicenseInfo, // Verified securely at pickup
+      requestedTrailer: bookingData.trailerId, // 'trailer-1' or 'trailer-2'
+      rentalPeriod: bookingData.period,
+      rentalPeriodLabel: tier.label,
+      pickupDateTime: new Date(bookingData.pickupDateTime),
+      returnDateTime: new Date(bookingData.returnDateTime),
+      intendedUse: bookingData.intendedUse,
+      additionalComments: bookingData.additionalComments || '',
+      rentalPayment: tier.rate, // Line Item 1
+      refundableSecurityDeposit: tier.deposit, // Line Item 2
+      totalBeforeTax: tier.rate + tier.deposit,
+      status: 'PENDING_APPROVAL', // Approval required by L&D Trailers
+      paymentStatus: 'AUTHORIZED'
+    };
+
+    // Save to Wix CMS Collection 'Bookings'
+    const savedBooking = await wixData.insert('Bookings', bookingItem);
+
+    // Trigger automated booking received email to customer
+    try {
+      await triggeredEmails.emailContact('booking_received_notification', bookingData.contactId, {
+        variables: {
+          customerName: bookingData.customerName,
+          bookingNumber: bookingNumber,
+          trailerName: bookingData.trailerName,
+          rentalFee: '$' + tier.rate.toFixed(2),
+          securityDeposit: '$' + tier.deposit.toFixed(2),
+          total: '$' + (tier.rate + tier.deposit).toFixed(2),
+          pickupDate: bookingData.pickupDateTime
+        }
+      });
+    } catch (emailErr) {
+      console.warn('Wix triggered email fallback:', emailErr);
+    }
+
+    return {
+      success: true,
+      bookingNumber: bookingNumber,
+      bookingId: savedBooking._id,
+      rentalFee: tier.rate,
+      securityDeposit: tier.deposit
+    };
+  } catch (error) {
+    console.error('Error creating booking request in Wix CMS:', error);
+    throw new Error('Unable to submit booking request. Please call (662) 555-0199 directly.');
+  }
+}
+
+/**
+ * Checks if a trailer is available for a specified date range
+ */
+export async function checkTrailerAvailability(trailerId, pickupDate, returnDate) {
+  const pDate = new Date(pickupDate);
+  const rDate = new Date(returnDate);
+
+  const bookings = await wixData.query('Bookings')
+    .eq('requestedTrailer', trailerId)
+    .ne('status', 'REJECTED')
+    .find();
+
+  // Check collision
+  const hasCollision = bookings.items.some(item => {
+    const itemPickup = new Date(item.pickupDateTime);
+    const itemReturn = new Date(item.returnDateTime);
+    return (pDate <= itemReturn && rDate >= itemPickup);
+  });
+
+  return !hasCollision;
+}
+
+/**
+ * Returns all blocked dates from the Wix CMS collection
+ */
+export async function getBlockedDates() {
+  const results = await wixData.query('BlockedDates').find();
+  return results.items.map(item => item.dateString); // 'YYYY-MM-DD'
+}

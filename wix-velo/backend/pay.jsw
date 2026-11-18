@@ -1,0 +1,43 @@
+// =============================================================================
+// WIX VELO BACKEND MODULE: pay.jsw
+// L&D Trailers - Corinth, Mississippi
+// Online Payments with Separate Rental Charge & Refundable Security Deposit
+// =============================================================================
+
+import wixPayBackend from 'wix-pay-backend';
+
+/**
+ * Creates a Wix Pay order separating the Rental Payment and Refundable Security Deposit
+ * into two explicit line items before taxes
+ */
+export async function createPaymentOrder(bookingNumber, trailerName, periodLabel, rentalFee, securityDeposit) {
+  const lineItems = [
+    {
+      name: `Trailer Rental Fee - ${trailerName} (${periodLabel})`,
+      price: Number(rentalFee),
+      quantity: 1,
+      description: 'L&D Trailers utility trailer rental charge in Corinth, MS'
+    },
+    {
+      name: 'Refundable Security Deposit',
+      price: Number(securityDeposit),
+      quantity: 1,
+      description: 'Separate refundable deposit returned after inspection'
+    }
+  ];
+
+  const paymentInfo = {
+    items: lineItems,
+    amount: Number(rentalFee) + Number(securityDeposit),
+    currency: 'USD',
+    note: `L&D Trailers Reservation #${bookingNumber}`
+  };
+
+  try {
+    const payment = await wixPayBackend.createPayment(paymentInfo);
+    return payment;
+  } catch (err) {
+    console.error('Wix Pay Order Creation Error:', err);
+    throw err;
+  }
+}

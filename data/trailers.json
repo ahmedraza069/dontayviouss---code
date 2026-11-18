@@ -1,0 +1,83 @@
+[
+  {
+    "id": "trailer-1",
+    "name": "Trailer #1: 6x12 Utility Trailer",
+    "size": "6ft x 12ft",
+    "dimensions": "6ft Wide x 12ft Long (72\" x 144\")",
+    "type": "Utility Trailer",
+    "badge": "Introductory Pricing — Starting at $45/Day",
+    "primaryImage": "assets/trailer-1.jpg",
+    "actionImage": "assets/hauling-landscape.jpg",
+    "gallery": [
+      { "src": "assets/trailer-1.jpg", "caption": "Trailer #1 - 6x12 Utility Trailer with Rear Ramp Gate" },
+      { "src": "assets/hauling-landscape.jpg", "caption": "Trailer #1 Loaded with Commercial Zero-Turn Mower & Lawn Equipment" },
+      { "src": "assets/trailer-wheels.jpg", "caption": "Tandem Dual Axles with Polished Chrome Wheels & Heavy Duty Fenders" },
+      { "src": "assets/trailer-2.jpg", "caption": "Reinforced 4ft Fold-Down Rear Ramp Gate Tailgate" }
+    ],
+    "description": "Heavy-duty 6x12 utility trailer built for tough hauling jobs in Corinth and Northeast Mississippi. Equipped with tandem axles, shiny chrome wheels, tubular steel top rail, expanded steel mesh sides, and a heavy-duty rear fold-down ramp gate for effortless loading of riding mowers, zero-turns, ATVs, and heavy cargo.",
+    "specs": [
+      { "label": "Deck Dimensions", "value": "6 ft Wide x 12 ft Long (72\" x 144\")" },
+      { "label": "Side Rail Height", "value": "18\" Heavy Duty Steel Mesh" },
+      { "label": "Loading Ramp", "value": "4-Foot Fold-Down Ramp Tailgate" },
+      { "label": "Axle Setup", "value": "Tandem Dual Axles with Chrome Rims" },
+      { "label": "Coupler Size", "value": "2\" Ball Coupler with Safety Chains" },
+      { "label": "Electrical Plug", "value": "Standard 4-Pin Flat Connector (LED Lights)" },
+      { "label": "Tongue Jack", "value": "Heavy-Duty Top-Wind A-Frame Jack" }
+    ],
+    "rates": {
+      "daily": 45,
+      "weekend": 85,
+      "3day": 115,
+      "weekly": 225,
+      "monthly": 550
+    },
+    "deposit": {
+      "daily": 100,
+      "weekend": 100,
+      "3day": 100,
+      "weekly": 150,
+      "monthly": 200
+    },
+    "status": "Available"
+  },
+  {
+    "id": "trailer-2",
+    "name": "Trailer #2: 6x12 Utility Trailer",
+    "size": "6ft x 12ft",
+    "dimensions": "6ft Wide x 12ft Long (72\" x 144\")",
+    "type": "Utility Trailer",
+    "badge": "Introductory Pricing — Starting at $45/Day",
+    "primaryImage": "assets/trailer-wood-deck.jpg",
+    "actionImage": "assets/hauling-construction.jpg",
+    "gallery": [
+      { "src": "assets/trailer-wood-deck.jpg", "caption": "Trailer #2 - 6x12 Utility Trailer with Dark Stained Wood Plank Floor" },
+      { "src": "assets/hauling-construction.jpg", "caption": "Trailer #2 Loaded with Framing Lumber & Contractor Tools at Jobsite" },
+      { "src": "assets/hauling-atvs.jpg", "caption": "Trailer #2 Carrying Two ATVs on Mississippi Trail Road at Twilight" },
+      { "src": "assets/trailer-2.jpg", "caption": "Heavy Duty Tubular Steel Frame with Tie-Down Points & Ramp" }
+    ],
+    "description": "Equally dependable 6x12 utility trailer featuring rugged powder-coated black tubular steel framing, dark stained solid hardwood plank flooring, perimeter tie-down D-rings and stake pockets, and a spring-assisted rear fold-down ramp. Engineered for contractor reliability and effortless towing.",
+    "specs": [
+      { "label": "Deck Dimensions", "value": "6 ft Wide x 12 ft Long (72\" x 144\")" },
+      { "label": "Deck Surface", "value": "Dark Stained Solid Hardwood Planks" },
+      { "label": "Side Rail Height", "value": "14\" Tubular Steel Rail with Tie-Downs" },
+      { "label": "Loading Ramp", "value": "Heavy-Duty Spring-Assist Ramp Gate" },
+      { "label": "Coupler Size", "value": "2\" Ball Coupler with Locking Latch" },
+      { "label": "Electrical Plug", "value": "4-Pin Flat Plug with Sealed DOT LED Lights" }
+    ],
+    "rates": {
+      "daily": 45,
+      "weekend": 85,
+      "3day": 115,
+      "weekly": 225,
+      "monthly": 550
+    },
+    "deposit": {
+      "daily": 100,
+      "weekend": 100,
+      "3day": 100,
+      "weekly": 150,
+      "monthly": 200
+    },
+    "status": "Available"
+  }
+]

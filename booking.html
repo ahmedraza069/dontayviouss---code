@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online Booking System | L&D Trailers Corinth, MS</title>
+  <meta name="description" content="Reserve a utility trailer in Corinth, Mississippi. Interactive booking form with live pricing, separate security deposit line items, and secure online payments.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%230A0A0C'/><path d='M20 70 L40 25 L55 25 L35 70 Z' fill='%23C0C5CE'/><text x='52' y='55' font-family='Arial Black' font-weight='900' font-size='32' fill='%23E60000'>&amp;</text><path d='M65 25 L85 25 Q95 25 95 47 Q95 70 85 70 L65 70 Z' fill='%23C0C5CE'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,700&family=Inter:wght@400;500;600;700&family=Montserrat:wght@800;900&family=Russo+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Top Utility Bar -->
+  <aside class="top-bar">
+    <div class="container top-bar-content">
+      <div class="top-bar-left">
+        <span class="top-bar-item"><i class="fa-solid fa-location-dot"></i> Locally Owned in Corinth, Mississippi</span>
+        <span class="top-bar-item"><i class="fa-solid fa-clock"></i> Mon–Sun: 7am–7pm (Pickup by Appointment)</span>
+      </div>
+      <div class="top-bar-right">
+        <a href="tel:6625550199" class="top-bar-item top-bar-link"><i class="fa-solid fa-phone"></i> (662) 555-0199</a>
+        <a href="https://facebook.com/LDTrailersCorinth" target="_blank" rel="noopener" class="top-bar-item top-bar-link"><i class="fa-brands fa-facebook"></i> Facebook Page</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Sticky Header -->
+  <header class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-logo-mark">
+          <div class="logo-main-text"><span class="logo-l">L</span><span class="logo-amp">&amp;</span><span class="logo-d">D</span></div>
+          <div class="logo-sub-text">TRAILERS</div>
+          <div class="logo-location-tag">CORINTH, MS</div>
+        </div>
+      </a>
+
+      <nav class="main-nav" id="desktopNav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="trailers.html" class="nav-link">Our Trailers</a>
+        <a href="pricing.html" class="nav-link">Rental Pricing</a>
+        <a href="about.html" class="nav-link">About Us</a>
+        <a href="policies.html" class="nav-link">Rental Policies</a>
+        <a href="service-area.html" class="nav-link">Service Area</a>
+        <a href="contact.html" class="nav-link">Contact Us</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="tel:6625550199" class="header-phone-btn"><i class="fa-solid fa-phone"></i> CALL US</a>
+        <a href="booking.html" class="btn btn-primary btn-angled"><i class="fa-solid fa-calendar-check"></i> BOOK A TRAILER</a>
+        <button type="button" class="mobile-nav-toggle" id="mobileNavToggle">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="mobile-drawer" id="mobileDrawer">
+    <div>
+      <div class="brand-logo" style="margin-bottom: 2rem;">
+        <div class="brand-logo-mark">
+          <div class="logo-main-text"><span class="logo-l">L</span><span class="logo-amp">&amp;</span><span class="logo-d">D</span></div>
+          <div class="logo-sub-text">TRAILERS</div>
+          <div class="logo-location-tag">CORINTH, MISSISSIPPI</div>
+        </div>
+      </div>
+      <nav class="mobile-drawer-links">
+        <a href="index.html" class="mobile-drawer-link">Home</a>
+        <a href="trailers.html" class="mobile-drawer-link">Our Trailers</a>
+        <a href="pricing.html" class="mobile-drawer-link">Rental Pricing</a>
+        <a href="about.html" class="mobile-drawer-link">About Us</a>
+        <a href="policies.html" class="mobile-drawer-link">Rental Policies</a>
+        <a href="service-area.html" class="mobile-drawer-link">Service Area</a>
+        <a href="contact.html" class="mobile-drawer-link">Contact Us</a>
+      </nav>
+    </div>
+    <div class="mobile-drawer-actions">
+      <a href="tel:6625550199" class="btn btn-call" style="width: 100%;"><i class="fa-solid fa-phone-volume"></i> CALL NOW</a>
+      <a href="booking.html" class="btn btn-primary" style="width: 100%;"><i class="fa-solid fa-calendar-check"></i> BOOK A TRAILER</a>
+    </div>
+  </aside>
+
+  <!-- DEDICATED VISUAL PAGE BANNER -->
+  <section class="page-banner">
+    <div class="page-banner-bg">
+      <img src="assets/trailer-1.jpg" alt="L&D Trailers Online Booking Banner">
+    </div>
+    <div class="page-banner-overlay"></div>
+    <div class="container">
+      <div class="page-banner-content">
+        <div class="breadcrumb-nav">
+          <a href="index.html">Home</a>
+          <span class="separator"><i class="fa-solid fa-chevron-right"></i></span>
+          <span class="current">Online Booking</span>
+        </div>
+        <div class="section-eyebrow">RESERVATION REQUEST &amp; ONLINE PAYMENTS</div>
+        <h1>ONLINE BOOKING SYSTEM</h1>
+        <p class="section-subtitle">
+          Submit your trailer rental request directly online. Fast owner review, live price transparency, and secure card payment integration.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Booking Layout -->
+  <main class="container page-container">
+    <div class="booking-layout-grid">
+      
+      <!-- Left: Real-Time Availability Calendar & Fleet Preview -->
+      <div>
+        <div class="calendar-card" style="margin-bottom: 2rem;">
+          <div class="calendar-header">
+            <div>
+              <h2 style="font-size: 1.3rem; margin-bottom: 0.2rem;"><i class="fa-regular fa-calendar-days text-red"></i> AVAILABILITY CALENDAR</h2>
+              <p style="font-size: 0.82rem; color: var(--text-muted);">Click any green available date to pre-fill your pickup date below.</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+              <span id="calendarMonthLabel" style="font-family: var(--font-heading); font-weight: 700; color: #FFF; min-width: 140px; text-align: center;">November 2026</span>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+          </div>
+
+          <div class="calendar-grid" id="calendarDaysGrid">
+            <!-- Rendered by JS -->
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; font-size: 0.8rem; color: var(--silver-dark); border-top: 1px solid rgba(255,255,255,0.06); padding-top: 1rem;">
+            <div style="display: flex; gap: 1rem;">
+              <span><i class="fa-solid fa-circle" style="color: #2ECC71; font-size: 0.65rem;"></i> Available</span>
+              <span><i class="fa-solid fa-circle" style="color: var(--red-primary); font-size: 0.65rem;"></i> Booked / Reserved</span>
+            </div>
+            <button type="button" style="color: var(--silver-light); text-decoration: underline;" onclick="toggleBlockedDatesDemo()">
+              [Owner Mode: Block Dates]
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Fleet Card Summary -->
+        <div class="industrial-card" style="padding: 1.8rem;">
+          <h3 style="font-size: 1.2rem; margin-bottom: 1rem;">CURRENT INITIAL FLEET</h3>
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; background: var(--bg-pitch); padding: 0.75rem; border-radius: var(--border-radius-sm);">
+              <img src="assets/trailer-1.jpg" alt="Trailer 1" style="width: 70px; height: 50px; object-fit: cover; border-radius: 2px;">
+              <div>
+                <strong style="color: #FFF; font-size: 0.95rem;">Trailer #1: 6x12 Utility Trailer</strong>
+                <div style="font-size: 0.8rem; color: var(--silver-dark);">Tandem Axle &bull; Chrome Wheels &bull; Ramp Gate</div>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem; background: var(--bg-pitch); padding: 0.75rem; border-radius: var(--border-radius-sm);">
+              <img src="assets/trailer-wood-deck.jpg" alt="Trailer 2" style="width: 70px; height: 50px; object-fit: cover; border-radius: 2px;">
+              <div>
+                <strong style="color: #FFF; font-size: 0.95rem;">Trailer #2: 6x12 Utility Trailer</strong>
+                <div style="font-size: 0.8rem; color: var(--silver-dark);">Hardwood Deck &bull; D-Rings &bull; Spring-Assist Ramp</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: The Complete 10-Field Booking Request Form -->
+      <div>
+        <div class="booking-form-card">
+          <div class="section-eyebrow" style="margin-bottom: 0.4rem;">ONLINE RESERVATION REQUEST</div>
+          <h2 style="font-size: 1.8rem; margin-bottom: 1.25rem;">RESERVE YOUR TRAILER</h2>
+
+          <!-- Verbatim Prominent Approval Notice Box -->
+          <div class="approval-alert-box">
+            <i class="fa-solid fa-triangle-exclamation approval-alert-icon"></i>
+            <div class="approval-alert-text">
+              <strong>IMPORTANT:</strong> Submitting a booking request does not guarantee availability. All booking requests are reviewed and approved by L&amp;D Trailers before the rental is confirmed.
+            </div>
+          </div>
+
+          <form id="onlineBookingForm" onsubmit="handleBookingSubmit(event)">
+            
+            <!-- Field 1: Customer's Full Name -->
+            <div class="form-group">
+              <label class="form-label" for="bookingName">1. Customer's Full Name *</label>
+              <input type="text" id="bookingName" class="form-input" placeholder="e.g. Johnathan Smith" required>
+            </div>
+
+            <!-- Field 2 & 3: Phone Number & Email Address -->
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="bookingPhone">2. Phone Number *</label>
+                <input type="tel" id="bookingPhone" class="form-input" placeholder="e.g. (662) 555-0199" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="bookingEmail">3. Email Address *</label>
+                <input type="email" id="bookingEmail" class="form-input" placeholder="e.g. john@example.com" required>
+              </div>
+            </div>
+
+            <!-- Field 4: Driver's License Info -->
+            <div class="form-group">
+              <label class="form-label" for="bookingDL">
+                <span>4. Driver's License Information *</span>
+                <span class="form-helper-badge"><i class="fa-solid fa-shield-check"></i> Verified securely at pickup</span>
+              </label>
+              <input type="text" id="bookingDL" class="form-input" placeholder="State &amp; Driver's License # (e.g. MS - S1234567)" required>
+            </div>
+
+            <!-- Field 5 & 6: Requested Trailer & Rental Period -->
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="bookingTrailer">5. Requested Trailer *</label>
+                <select id="bookingTrailer" class="form-select" onchange="updateLivePricing()" required>
+                  <option value="trailer-1">Trailer #1: 6x12 Utility Trailer</option>
+                  <option value="trailer-2">Trailer #2: 6x12 Utility Trailer</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="bookingPeriod">6. Rental Period *</label>
+                <select id="bookingPeriod" class="form-select" onchange="updateLivePricing()" required>
+                  <option value="daily">Daily Rental ($45 - 24 hrs)</option>
+                  <option value="weekend">Weekend Rental ($85 - Fri-Sun)</option>
+                  <option value="3day">3-Day Rental ($115 - 72 hrs)</option>
+                  <option value="weekly">Weekly Rental ($225 - 7 days)</option>
+                  <option value="monthly">Monthly Rental ($550 - 30 days)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Field 7 & 8: Pickup Date/Time & Return Date/Time -->
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="pickupDateTime">7. Pickup Date and Time *</label>
+                <input type="datetime-local" id="pickupDateTime" class="form-input" required onchange="calculateDurationDates()">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="returnDateTime">8. Return Date and Time *</label>
+                <input type="datetime-local" id="returnDateTime" class="form-input" required>
+              </div>
+            </div>
+
+            <!-- Field 9: Intended Use -->
+            <div class="form-group">
+              <label class="form-label" for="bookingUse">9. Intended Use of Trailer *</label>
+              <input type="text" id="bookingUse" class="form-input" placeholder="e.g. Lawn care equipment, home furniture move, contractor lumber" required>
+            </div>
+
+            <!-- Field 10: Additional Comments -->
+            <div class="form-group">
+              <label class="form-label" for="bookingComments">10. Additional Comments</label>
+              <textarea id="bookingComments" class="form-textarea" rows="3" placeholder="Tow vehicle make/model, hitch ball size (2&quot; standard), or special timing notes..."></textarea>
+            </div>
+
+            <!-- Live Price Breakdown Summary Box (Separate Line Items) -->
+            <div class="price-breakdown-box">
+              <div class="price-breakdown-title">
+                <i class="fa-solid fa-calculator text-red"></i> LIVE ESTIMATED PRICE SUMMARY
+              </div>
+              <div class="price-line-item">
+                <span>Selected Unit:</span>
+                <strong id="summaryTrailerName" class="text-white">Trailer #1: 6x12 Utility Trailer</strong>
+              </div>
+              <div class="price-line-item">
+                <span>1. Rental Payment (<span id="summaryPeriodLabel">Daily - 24 hrs</span>):</span>
+                <strong id="summaryRentalFee" class="text-white font-price">$45.00</strong>
+              </div>
+              <div class="price-line-item">
+                <span>2. Refundable Security Deposit:</span>
+                <strong id="summaryDepositFee" class="text-white font-price">$100.00</strong>
+              </div>
+              <div class="price-line-item total-line">
+                <span>Estimated Total (Before Taxes):</span>
+                <span id="summaryTotalEstimated" class="price-val">$145.00</span>
+              </div>
+              <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.6rem;">
+                * The security deposit is separate from the rental charge and is refunded after inspection.
+              </p>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-angled" style="width: 100%; padding: 1.2rem; font-size: 1.15rem;">
+              <i class="fa-solid fa-paper-plane"></i> SUBMIT BOOKING REQUEST &bull; AUTHORIZE
+            </button>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Checkout Modal (Stripe / Wix Payments Simulation) -->
+  <div class="modal-backdrop" id="checkoutModalBackdrop">
+    <div class="modal-dialog">
+      <button type="button" class="modal-close-btn" onclick="closeCheckoutModal()">&times;</button>
+      
+      <div id="checkoutStepReview">
+        <div class="section-eyebrow">SECURE CHECKOUT &bull; STRIPE / WIX PAYMENTS</div>
+        <h2 style="font-size: 1.6rem; margin-bottom: 0.5rem;">RESERVATION APPROVAL &amp; PAYMENT</h2>
+        <p style="font-size: 0.88rem; color: var(--silver-light); margin-bottom: 1.5rem;">
+          Your request details have been validated. Review the separated line items before authorizing your secure card method.
+        </p>
+
+        <div class="price-breakdown-box" style="margin-top: 0;">
+          <div class="price-line-item">
+            <span>Renter:</span>
+            <strong id="modalRenterName" class="text-white">Customer</strong>
+          </div>
+          <div class="price-line-item">
+            <span>Trailer:</span>
+            <strong id="modalTrailerName" class="text-white">Trailer #1</strong>
+          </div>
+          <div class="price-line-item">
+            <span>1. Rental Fee (<span id="modalPeriodName">Daily</span>):</span>
+            <strong id="modalRentalFee" class="text-white font-price">$45.00</strong>
+          </div>
+          <div class="price-line-item">
+            <span>2. Refundable Security Deposit:</span>
+            <strong id="modalDepositFee" class="text-white font-price">$100.00</strong>
+          </div>
+          <div class="price-line-item total-line">
+            <span>Total to Authorize:</span>
+            <span id="modalTotalAuth" class="price-val">$145.00</span>
+          </div>
+        </div>
+
+        <form onsubmit="handlePaymentSubmit(event)">
+          <div class="form-group">
+            <label class="form-label">Cardholder Name</label>
+            <input type="text" class="form-input" placeholder="Name on card" required value="Johnathan Smith">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Card Number (Stripe / 256-Bit SSL Encrypted)</label>
+            <div style="position: relative;">
+              <input type="text" class="form-input" placeholder="4242 •••• •••• 4242" required maxlength="19" value="4242 4242 4242 4242">
+              <span style="position: absolute; right: 12px; top: 12px; color: var(--silver-dark);"><i class="fa-brands fa-cc-visa"></i> <i class="fa-brands fa-cc-mastercard"></i></span>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label">Expiration (MM/YY)</label>
+              <input type="text" class="form-input" placeholder="12/28" required maxlength="5" value="12/28">
+            </div>
+            <div class="form-group">
+              <label class="form-label">CVC / CVV</label>
+              <input type="text" class="form-input" placeholder="123" required maxlength="4" value="888">
+            </div>
+          </div>
+
+          <div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.4;">
+            <i class="fa-solid fa-lock text-red"></i> <strong>Bank-Level Security:</strong> Payment information is processed securely through Stripe/Wix Payments. No card numbers are stored directly on the website database.
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="btnPayAuthorize" style="width: 100%; padding: 1.1rem;">
+            <i class="fa-solid fa-shield-halved"></i> AUTHORIZE &amp; CONFIRM BOOKING REQUEST
+          </button>
+        </form>
+      </div>
+
+      <div id="checkoutStepSuccess" style="display: none; text-align: center; padding: 1rem 0;">
+        <div style="width: 64px; height: 64px; background: rgba(46, 204, 113, 0.15); border: 2px solid #2ECC71; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #2ECC71; margin: 0 auto 1.25rem;">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <h2 style="font-size: 1.7rem; margin-bottom: 0.5rem; color: #FFF;">BOOKING REQUEST SUBMITTED!</h2>
+        <p style="color: var(--silver-light); font-size: 0.95rem; margin-bottom: 1.5rem;">
+          Receipt #<span id="receiptNumber" style="font-family: var(--font-price); font-weight: 800; color: var(--red-primary);">LD-94821</span>
+        </p>
+
+        <div class="pricing-disclaimer-box" style="text-align: left; margin-bottom: 1.5rem;">
+          <i class="fa-solid fa-envelope-circle-check text-red pricing-disclaimer-icon"></i>
+          <div class="pricing-disclaimer-text">
+            <strong>Automated Emails Dispatched:</strong><br>
+            A confirmation email and formal payment receipt have been sent to your inbox. An L&amp;D Trailers team member in Corinth, MS will review your driver's license and towing vehicle specs for final pickup approval.
+          </div>
+        </div>
+
+        <a href="index.html" class="btn btn-secondary" style="width: 100%;">
+          RETURN TO HOME
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a href="index.html" class="brand-logo">
+            <div class="brand-logo-mark">
+              <div class="logo-main-text"><span class="logo-l">L</span><span class="logo-amp">&amp;</span><span class="logo-d">D</span></div>
+              <div class="logo-sub-text">TRAILERS</div>
+              <div class="logo-location-tag">CORINTH, MISSISSIPPI</div>
+            </div>
+          </a>
+          <div class="footer-brand-tagline">Affordable. Reliable. Local.</div>
+          <p class="footer-brand-desc">Locally owned utility trailer rentals in Corinth, Mississippi.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">QUICK LINKS</div>
+          <ul class="footer-links-list">
+            <li><a href="index.html" class="footer-link">Home</a></li>
+            <li><a href="trailers.html" class="footer-link">Our Trailers</a></li>
+            <li><a href="pricing.html" class="footer-link">Rental Pricing</a></li>
+            <li><a href="about.html" class="footer-link">About Us</a></li>
+            <li><a href="policies.html" class="footer-link">Rental Policies</a></li>
+            <li><a href="service-area.html" class="footer-link">Service Area</a></li>
+            <li><a href="contact.html" class="footer-link">Contact Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">SERVICE AREAS</div>
+          <ul class="footer-links-list">
+            <li><span class="footer-link text-white">Corinth, MS (Primary)</span></li>
+            <li><span class="footer-link">Glen, MS</span></li>
+            <li><span class="footer-link">Booneville, MS</span></li>
+            <li><span class="footer-link">Rienzi, MS</span></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">DIRECT CONTACT</div>
+          <p style="font-size: 0.92rem; color: var(--silver-light); margin-bottom: 0.8rem;"><i class="fa-solid fa-phone text-red"></i> (662) 555-0199</p>
+          <p style="font-size: 0.92rem; color: var(--silver-light); margin-bottom: 0.8rem;"><i class="fa-solid fa-envelope text-red"></i> rentals@ldtrailers.com</p>
+          <p style="font-size: 0.92rem; color: var(--silver-light); margin-bottom: 1.5rem;"><i class="fa-solid fa-location-dot text-red"></i> Corinth, Mississippi 38834</p>
+          <div class="footer-social-strip">
+            <a href="https://facebook.com/LDTrailersCorinth" target="_blank" rel="noopener" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="tel:6625550199" class="social-btn"><i class="fa-solid fa-phone"></i></a>
+            <a href="mailto:rentals@ldtrailers.com" class="social-btn"><i class="fa-solid fa-envelope"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom-bar">
+        <div>&copy; 2026 L&amp;D Trailers. All rights reserved. Corinth, Mississippi.</div>
+        <div style="display: flex; gap: 1.5rem;">
+          <a href="policies.html" class="footer-link">Terms and Conditions</a>
+          <a href="policies.html" class="footer-link">Privacy Policy</a>
+          <a href="admin.html" class="footer-link" style="color: var(--red-primary);"><i class="fa-solid fa-lock"></i> Owner Admin</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/cms-data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    const toggle = document.getElementById('mobileNavToggle');
+    const drawer = document.getElementById('mobileDrawer');
+    const backdrop = document.getElementById('drawerBackdrop');
+    if (toggle && drawer && backdrop) {
+      toggle.addEventListener('click', () => {
+        drawer.classList.toggle('open');
+        backdrop.classList.toggle('open');
+        toggle.classList.toggle('open');
+      });
+      backdrop.addEventListener('click', () => {
+        drawer.classList.remove('open');
+        backdrop.classList.remove('open');
+        toggle.classList.remove('open');
+      });
+    }
+  </script>
+  <script>
+    // Handle URL parameters like ?trailer=trailer-2 or ?period=weekend
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const trailerParam = params.get('trailer');
+      const periodParam = params.get('period');
+
+      if (trailerParam && document.getElementById('bookingTrailer')) {
+        document.getElementById('bookingTrailer').value = trailerParam;
+      }
+      if (periodParam && document.getElementById('bookingPeriod')) {
+        document.getElementById('bookingPeriod').value = periodParam;
+      }
+      updateLivePricing();
+    });
+  </script>
+</body>
+</html>

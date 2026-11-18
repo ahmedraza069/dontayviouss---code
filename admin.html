@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Owner CMS & Reservation Dashboard | L&D Trailers</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%230A0A0C'/><path d='M20 70 L40 25 L55 25 L35 70 Z' fill='%23C0C5CE'/><text x='52' y='55' font-family='Arial Black' font-weight='900' font-size='32' fill='%23E60000'>&amp;</text><path d='M65 25 L85 25 Q95 25 95 47 Q95 70 85 70 L65 70 Z' fill='%23C0C5CE'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,700&family=Inter:wght@400;500;600;700&family=Montserrat:wght@800;900&family=Russo+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .status-badge {
+      display: inline-block;
+      padding: 0.3rem 0.6rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .status-pending { background: rgba(241, 196, 15, 0.2); color: #F1C40F; border: 1px solid #F1C40F; }
+    .status-approved { background: rgba(46, 204, 113, 0.2); color: #2ECC71; border: 1px solid #2ECC71; }
+    .status-rejected { background: rgba(230, 0, 0, 0.2); color: #E60000; border: 1px solid #E60000; }
+    .admin-tab-btn {
+      padding: 0.75rem 1.5rem;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--silver-light);
+      background: var(--bg-card);
+      border: 1px solid var(--border-silver);
+      border-bottom: none;
+      cursor: pointer;
+    }
+    .admin-tab-btn.active {
+      background: var(--red-primary);
+      color: #FFF;
+      border-color: var(--red-primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Header -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-logo-mark">
+          <div class="logo-main-text"><span class="logo-l">L</span><span class="logo-amp">&amp;</span><span class="logo-d">D</span></div>
+          <div class="logo-sub-text">TRAILERS &bull; OWNER DASHBOARD</div>
+          <div class="logo-location-tag">CORINTH, MISSISSIPPI</div>
+        </div>
+      </a>
+      <div style="display: flex; gap: 1rem; align-items: center;">
+        <span class="badge-silver"><i class="fa-solid fa-server"></i> Live Backend Connected</span>
+        <a href="index.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-arrow-left"></i> View Live Site</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container page-container" style="padding-top: 3rem;">
+    
+    <!-- Top Stats Bar -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 2.5rem;">
+      <div class="industrial-card" style="padding: 1.5rem;">
+        <div style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Total Active Fleet</div>
+        <div style="font-family: var(--font-price); font-size: 2.4rem; font-weight: 900; color: #FFF;" id="statFleetCount">2</div>
+        <div style="font-size: 0.78rem; color: #2ECC71;"><i class="fa-solid fa-check"></i> Scalable to 5+ trailers</div>
+      </div>
+      <div class="industrial-card" style="padding: 1.5rem;">
+        <div style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Pending Reservations</div>
+        <div style="font-family: var(--font-price); font-size: 2.4rem; font-weight: 900; color: #F1C40F;" id="statPendingCount">1</div>
+        <div style="font-size: 0.78rem; color: var(--silver-dark);">Requires Owner Review</div>
+      </div>
+      <div class="industrial-card" style="padding: 1.5rem;">
+        <div style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Approved Rentals</div>
+        <div style="font-family: var(--font-price); font-size: 2.4rem; font-weight: 900; color: #2ECC71;" id="statApprovedCount">1</div>
+        <div style="font-size: 0.78rem; color: var(--silver-dark);">Ready for Pickup</div>
+      </div>
+      <div class="industrial-card" style="padding: 1.5rem;">
+        <div style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Security Deposits Held</div>
+        <div style="font-family: var(--font-price); font-size: 2.4rem; font-weight: 900; color: var(--red-primary);" id="statDepositTotal">$200.00</div>
+        <div style="font-size: 0.78rem; color: var(--silver-dark);">Separate Line Items (Refundable)</div>
+      </div>
+    </div>
+
+    <!-- Tab Buttons -->
+    <div style="display: flex; gap: 0.5rem; border-bottom: 2px solid var(--border-silver); margin-bottom: 2rem;">
+      <button type="button" class="admin-tab-btn active" id="tabBookingsBtn" onclick="switchAdminTab('bookings')">
+        <i class="fa-solid fa-calendar-check"></i> Reservations &amp; Approvals
+      </button>
+      <button type="button" class="admin-tab-btn" id="tabFleetBtn" onclick="switchAdminTab('fleet')">
+        <i class="fa-solid fa-trailer"></i> Fleet CMS Manager (Add Trailers)
+      </button>
+      <button type="button" class="admin-tab-btn" id="tabCalendarBtn" onclick="switchAdminTab('calendar')">
+        <i class="fa-solid fa-calendar-days"></i> Block Dates Manager
+      </button>
+    </div>
+
+    <!-- TAB 1: RESERVATIONS & APPROVALS -->
+    <section id="adminTabBookings" class="admin-tab-content">
+      <div class="industrial-card" style="padding: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h2 style="font-size: 1.6rem;">INCOMING BOOKING REQUESTS</h2>
+            <p style="color: var(--silver-light); font-size: 0.9rem;">Review each customer's license and towing capacity before confirming possession.</p>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="loadBookings()"><i class="fa-solid fa-arrows-rotate"></i> Refresh</button>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
+            <thead>
+              <tr style="border-bottom: 2px solid var(--red-primary); color: #FFF; font-family: var(--font-heading); text-transform: uppercase;">
+                <th style="padding: 0.85rem;">Booking ID</th>
+                <th style="padding: 0.85rem;">Customer Details</th>
+                <th style="padding: 0.85rem;">Trailer &amp; Dates</th>
+                <th style="padding: 0.85rem;">Payment Breakdown</th>
+                <th style="padding: 0.85rem;">Status</th>
+                <th style="padding: 0.85rem; text-align: right;">Action</th>
+              </tr>
+            </thead>
+            <tbody id="bookingsTableBody" style="color: var(--silver-light);">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: FLEET CMS MANAGER -->
+    <section id="adminTabFleet" class="admin-tab-content" style="display: none;">
+      <div class="booking-layout-grid">
+        <!-- Add New Trailer Form -->
+        <div class="industrial-card" style="padding: 2rem;">
+          <div class="section-eyebrow">CMS ADDITION</div>
+          <h2 style="font-size: 1.5rem; margin-bottom: 1.25rem;">ADD TRAILER TO FLEET (EXPAND TO 5+)</h2>
+          
+          <form onsubmit="handleAddNewTrailer(event)">
+            <div class="form-group">
+              <label class="form-label">Trailer Name *</label>
+              <input type="text" id="newTrailerName" class="form-input" placeholder="e.g. Trailer #3: 7x14 Tandem Dump Trailer" required>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label">Size Dimensions *</label>
+                <input type="text" id="newTrailerSize" class="form-input" placeholder="e.g. 7ft x 14ft" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Trailer Type *</label>
+                <input type="text" id="newTrailerType" class="form-input" placeholder="e.g. Dump Trailer / Utility Trailer" required>
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label">Daily Rental Rate ($) *</label>
+                <input type="number" id="newTrailerDailyRate" class="form-input" placeholder="45" value="65" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Refundable Security Deposit ($) *</label>
+                <input type="number" id="newTrailerDeposit" class="form-input" placeholder="100" value="150" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Description *</label>
+              <textarea id="newTrailerDesc" class="form-textarea" rows="3" placeholder="Description of trailer construction, ramp gate, hauling capability..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+              <i class="fa-solid fa-plus-circle"></i> PUBLISH NEW TRAILER TO CMS
+            </button>
+          </form>
+        </div>
+
+        <!-- Active Fleet Listings -->
+        <div>
+          <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">ACTIVE FLEET CMS</h2>
+          <div id="fleetListingsContainer" style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: BLOCK DATES MANAGER -->
+    <section id="adminTabCalendar" class="admin-tab-content" style="display: none;">
+      <div class="industrial-card" style="padding: 2.5rem; max-width: 800px; margin: 0 auto;">
+        <div class="section-eyebrow">CALENDAR DISPATCH MANAGEMENT</div>
+        <h2 style="font-size: 1.6rem; margin-bottom: 0.5rem;">BLOCK UNAVAILABLE RENTAL DATES</h2>
+        <p style="color: var(--silver-light); margin-bottom: 2rem;">
+          Prevent customers from submitting reservation requests on dates when trailers are already rented or undergoing maintenance.
+        </p>
+
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
+          <input type="date" id="blockDateInput" class="form-input" style="max-width: 260px;" value="2026-11-28">
+          <button type="button" class="btn btn-primary" onclick="addBlockedDate()"><i class="fa-solid fa-ban"></i> Block This Date</button>
+        </div>
+
+        <h3 style="font-size: 1.2rem; margin-bottom: 1rem; color: #FFF;">CURRENTLY BLOCKED DATES</h3>
+        <div id="blockedDatesList" style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2rem;">
+          <!-- Rendered via JS -->
+        </div>
+
+        <div class="pricing-disclaimer-box">
+          <i class="fa-solid fa-info-circle text-red pricing-disclaimer-icon"></i>
+          <div class="pricing-disclaimer-text">
+            <strong>Real-Time Sync:</strong> Any date blocked or unblocked here instantly updates across the website calendar on `booking.html`, `trailers.html`, and `index.html`.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    let currentBookings = [];
+    let currentTrailers = [];
+    let currentBlocked = [];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadBookings();
+      loadTrailers();
+      loadBlockedDates();
+    });
+
+    function switchAdminTab(tabName) {
+      document.querySelectorAll('.admin-tab-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+
+      if (tabName === 'bookings') {
+        document.getElementById('adminTabBookings').style.display = 'block';
+        document.getElementById('tabBookingsBtn').classList.add('active');
+        loadBookings();
+      } else if (tabName === 'fleet') {
+        document.getElementById('adminTabFleet').style.display = 'block';
+        document.getElementById('tabFleetBtn').classList.add('active');
+        loadTrailers();
+      } else if (tabName === 'calendar') {
+        document.getElementById('adminTabCalendar').style.display = 'block';
+        document.getElementById('tabCalendarBtn').classList.add('active');
+        loadBlockedDates();
+      }
+    }
+
+    async function loadBookings() {
+      try {
+        const res = await fetch('/api/bookings');
+        currentBookings = await res.json();
+        renderBookings();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderBookings() {
+      const tbody = document.getElementById('bookingsTableBody');
+      if (!tbody) return;
+
+      let pending = 0;
+      let approved = 0;
+      let deposits = 0;
+
+      tbody.innerHTML = '';
+      currentBookings.forEach(b => {
+        if (b.status === 'PENDING_APPROVAL') pending++;
+        if (b.status === 'APPROVED') approved++;
+        deposits += Number(b.securityDeposit || 0);
+
+        const statusClass = b.status === 'APPROVED' ? 'status-approved' : (b.status === 'REJECTED' ? 'status-rejected' : 'status-pending');
+
+        const tr = document.createElement('tr');
+        tr.style.borderBottom = '1px solid var(--border-silver)';
+        tr.innerHTML = `
+          <td style="padding: 1rem 0.85rem; font-weight: 700; color: #FFF;">
+            ${b.id}<br>
+            <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: normal;">${new Date(b.createdAt).toLocaleDateString()}</span>
+          </td>
+          <td style="padding: 1rem 0.85rem;">
+            <strong style="color: #FFF;">${b.customerName}</strong><br>
+            <span style="font-size: 0.8rem; color: var(--silver-dark);"><i class="fa-solid fa-phone"></i> ${b.phone}</span><br>
+            <span style="font-size: 0.8rem; color: var(--silver-dark);"><i class="fa-solid fa-id-card"></i> DL: ${b.driverLicense}</span>
+          </td>
+          <td style="padding: 1rem 0.85rem;">
+            <strong style="color: #FFF;">${b.trailerName}</strong><br>
+            <span style="font-size: 0.8rem; color: var(--red-primary);">${b.periodLabel}</span><br>
+            <span style="font-size: 0.78rem; color: var(--text-muted);">${b.pickupDateTime} to ${b.returnDateTime}</span>
+          </td>
+          <td style="padding: 1rem 0.85rem;">
+            <div>Rental Fee: <strong>$${Number(b.rentalFee).toFixed(2)}</strong></div>
+            <div style="color: var(--silver-dark); font-size: 0.82rem;">Deposit: <strong>$${Number(b.securityDeposit).toFixed(2)}</strong></div>
+            <div style="font-weight: 700; color: #FFF; font-size: 0.95rem;">Total Auth: $${Number(b.totalAuthorized).toFixed(2)}</div>
+          </td>
+          <td style="padding: 1rem 0.85rem;">
+            <span class="status-badge ${statusClass}">${b.status}</span>
+          </td>
+          <td style="padding: 1rem 0.85rem; text-align: right;">
+            ${b.status === 'PENDING_APPROVAL' ? `
+              <button type="button" class="btn btn-primary btn-sm" onclick="updateBookingStatus('${b.id}', 'APPROVED')" style="margin-bottom: 0.3rem;">
+                <i class="fa-solid fa-check"></i> Approve
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="updateBookingStatus('${b.id}', 'REJECTED')">
+                <i class="fa-solid fa-xmark"></i> Decline
+              </button>
+            ` : `
+              <span style="font-size: 0.82rem; color: #2ECC71;"><i class="fa-solid fa-envelope"></i> Invoice Sent</span>
+            `}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById('statPendingCount').textContent = pending;
+      document.getElementById('statApprovedCount').textContent = approved;
+      document.getElementById('statDepositTotal').textContent = `$${deposits.toFixed(2)}`;
+    }
+
+    async function updateBookingStatus(id, newStatus) {
+      try {
+        const res = await fetch(`/api/bookings/${id}/status`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert(`Booking #${id} status updated to: ${newStatus}`);
+          loadBookings();
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function loadTrailers() {
+      try {
+        const res = await fetch('/api/trailers');
+        currentTrailers = await res.json();
+        renderFleet();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderFleet() {
+      const container = document.getElementById('fleetListingsContainer');
+      if (!container) return;
+      container.innerHTML = '';
+      document.getElementById('statFleetCount').textContent = currentTrailers.length;
+
+      currentTrailers.forEach(t => {
+        const card = document.createElement('div');
+        card.className = 'industrial-card';
+        card.style.padding = '1.25rem';
+        card.innerHTML = `
+          <div style="display: flex; gap: 1rem; align-items: center;">
+            <img src="${t.primaryImage}" alt="${t.name}" style="width: 100px; height: 70px; object-fit: cover; border-radius: 4px;">
+            <div style="flex-grow: 1;">
+              <h3 style="font-size: 1.15rem; margin-bottom: 0.2rem;">${t.name}</h3>
+              <div style="font-size: 0.85rem; color: var(--silver-dark);">${t.dimensions} &bull; Starting at $${t.rates ? t.rates.daily : 45}/day</div>
+            </div>
+            <span class="badge-red">Active in Fleet</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    async function handleAddNewTrailer(e) {
+      e.preventDefault();
+      const name = document.getElementById('newTrailerName').value;
+      const size = document.getElementById('newTrailerSize').value;
+      const type = document.getElementById('newTrailerType').value;
+      const dailyRate = Number(document.getElementById('newTrailerDailyRate').value);
+      const deposit = Number(document.getElementById('newTrailerDeposit').value);
+      const desc = document.getElementById('newTrailerDesc').value;
+
+      try {
+        const res = await fetch('/api/trailers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name, size, type,
+            primaryImage: "assets/hauling-construction.jpg",
+            description: desc,
+            rates: { daily: dailyRate, weekend: dailyRate * 1.8, '3day': dailyRate * 2.5, weekly: dailyRate * 5, monthly: dailyRate * 12 },
+            deposit: { daily: deposit, weekend: deposit, '3day': deposit, weekly: deposit * 1.5, monthly: deposit * 2 }
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert(`Success! "${name}" added to L&D Trailers fleet CMS.`);
+          e.target.reset();
+          loadTrailers();
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function loadBlockedDates() {
+      try {
+        const res = await fetch('/api/blocked-dates');
+        currentBlocked = await res.json();
+        renderBlockedDates();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function renderBlockedDates() {
+      const container = document.getElementById('blockedDatesList');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (currentBlocked.length === 0) {
+        container.innerHTML = '<span style="color: var(--text-muted); font-size: 0.9rem;">No dates currently blocked. All dates open!</span>';
+        return;
+      }
+
+      currentBlocked.forEach(d => {
+        const chip = document.createElement('span');
+        chip.className = 'badge-red';
+        chip.style.cursor = 'pointer';
+        chip.innerHTML = `<i class="fa-solid fa-ban"></i> ${d} &times; (Click to Unblock)`;
+        chip.onclick = () => removeBlockedDate(d);
+        container.appendChild(chip);
+      });
+    }
+
+    async function addBlockedDate() {
+      const d = document.getElementById('blockDateInput').value;
+      if (!d) return;
+      if (currentBlocked.includes(d)) {
+        alert('Date is already blocked!');
+        return;
+      }
+      currentBlocked.push(d);
+      await saveBlockedDates();
+    }
+
+    async function removeBlockedDate(d) {
+      currentBlocked = currentBlocked.filter(x => x !== d);
+      await saveBlockedDates();
+    }
+
+    async function saveBlockedDates() {
+      try {
+        const res = await fetch('/api/blocked-dates', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ dates: currentBlocked })
+        });
+        const data = await res.json();
+        if (data.success) {
+          renderBlockedDates();
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  </script>
+</body>
+</html>
