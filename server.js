@@ -24,7 +24,8 @@ const MIME_TYPES = {
   '.webp': 'image/webp',
   '.woff2': 'font/woff2',
   '.woff': 'font/woff',
-  '.ttf': 'font/ttf'
+  '.ttf': 'font/ttf',
+  '.csv': 'text/csv; charset=UTF-8'
 };
 
 // Helper to read/write JSON files safely
