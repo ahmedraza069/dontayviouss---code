@@ -23,14 +23,14 @@ $w.onReady(async function () {
   }
 
   // 1. Fetch Blocked Dates from Wix CMS 'BlockedDates' Collection
+  const blockedDatesArray = [];
+  const blockedByTrailer = {
+    'trailer-1': [],
+    'trailer-2': []
+  };
+
   try {
     const blockedQuery = await wixData.query('BlockedDates').find();
-    const blockedDatesArray = [];
-    const blockedByTrailer = {
-      'trailer-1': [],
-      'trailer-2': []
-    };
-
     blockedQuery.items.forEach(item => {
       // Safely parse date from DateString, StartDate, or dateString
       const rawDate = item.DateString || item.dateString || item.StartDate || item.startDate;
@@ -48,16 +48,39 @@ $w.onReady(async function () {
         if (appliesTo2) blockedByTrailer['trailer-2'].push(ymd);
       }
     });
-
-    // Send live CMS blocked dates into the HTML Embed component
-    embedElement.postMessage({
-      type: 'WIX_CMS_DATA',
-      blockedDates: blockedDatesArray,
-      blockedByTrailer: blockedByTrailer
-    });
   } catch (err) {
     console.warn('Could not fetch BlockedDates from CMS:', err);
   }
+
+  // 2. Fetch Live Rental Pricing from Wix CMS 'Trailers' Collection
+  // Allows the business client to modify prices directly in the CMS table without touching code
+  const trailerPricingMap = {};
+  try {
+    const trailersQuery = await wixData.query('Trailers').find();
+    trailersQuery.items.forEach(t => {
+      const tId = t.slug || t.trailerId || t.TrailerID || (t.title && t.title.includes('#1') ? 'trailer-1' : 'trailer-2');
+      trailerPricingMap[tId] = {
+        daily: Number(t.DailyRate || t.dailyRate || 45),
+        weekend: Number(t.WeekendRate || t.weekendRate || 85),
+        threeDay: Number(t.ThreeDayRate || t.threeDayRate || 115),
+        weekly: Number(t.WeeklyRate || t.weeklyRate || 225),
+        monthly: Number(t.MonthlyRate || t.monthlyRate || 550),
+        depositStandard: Number(t.DailyDeposit || t.dailyDeposit || 100),
+        depositWeekly: Number(t.WeeklyDeposit || t.weeklyDeposit || 150),
+        depositMonthly: Number(t.MonthlyDeposit || t.monthlyDeposit || 200)
+      };
+    });
+  } catch (err) {
+    console.warn('Could not fetch Trailers pricing from CMS:', err);
+  }
+
+  // Send live CMS data (Blocked Dates + Dynamic Pricing) into the HTML Embed component
+  embedElement.postMessage({
+    type: 'WIX_CMS_DATA',
+    blockedDates: blockedDatesArray,
+    blockedByTrailer: blockedByTrailer,
+    trailerPricing: trailerPricingMap
+  });
 
   // 2. Listen for Booking Submission from the Embed HTML
   embedElement.onMessage(async (event) => {

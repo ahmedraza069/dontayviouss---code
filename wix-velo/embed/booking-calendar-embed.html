@@ -1083,6 +1083,9 @@
     let currentTrailerId = 'trailer-1';
     let currentTrailerName = 'Trailer #1: 6x12 Utility Trailer';
 
+    // Dynamic CMS Pricing from Wix 'Trailers' Collection
+    let cmsPricingByTrailer = null;
+
     // Blocked Dates Database (Accepts dynamic CMS updates via Wix Velo)
     let blockedDates = ['2026-11-20', '2026-11-21', '2026-11-22'];
     let blockedDatesByTrailer = {
@@ -1100,13 +1103,17 @@
       window.addEventListener('message', (event) => {
         if (!event.data) return;
 
-        // 1. Live Blocked Dates from CMS
+        // 1. Live Blocked Dates & Dynamic CMS Pricing from Velo
         if (event.data.type === 'WIX_CMS_DATA') {
           if (Array.isArray(event.data.blockedDates)) {
             blockedDates = event.data.blockedDates;
           }
           if (event.data.blockedByTrailer) {
             blockedDatesByTrailer = event.data.blockedByTrailer;
+          }
+          if (event.data.trailerPricing) {
+            cmsPricingByTrailer = event.data.trailerPricing;
+            applyTrailerPricing();
           }
           renderCalendar();
         }
@@ -1355,10 +1362,42 @@
       }
     }
 
+    // Dynamic CMS Pricing Applier
+    function applyTrailerPricing() {
+      if (cmsPricingByTrailer && cmsPricingByTrailer[currentTrailerId]) {
+        const cmsRates = cmsPricingByTrailer[currentTrailerId];
+        if (cmsRates.daily) RATES.daily = cmsRates.daily;
+        if (cmsRates.weekend) RATES.weekend = cmsRates.weekend;
+        if (cmsRates.threeDay) RATES.threeDay = cmsRates.threeDay;
+        if (cmsRates.weekly) RATES.weekly = cmsRates.weekly;
+        if (cmsRates.monthly) RATES.monthly = cmsRates.monthly;
+        if (cmsRates.depositStandard) RATES.depositStandard = cmsRates.depositStandard;
+        if (cmsRates.depositWeekly) RATES.depositWeekly = cmsRates.depositWeekly;
+        if (cmsRates.depositMonthly) RATES.depositMonthly = cmsRates.depositMonthly;
+        updateDropdownLabels();
+        updateCompoundPricing();
+      }
+    }
+
+    // Sync Dropdown Options Text with Dynamic CMS Rates
+    function updateDropdownLabels() {
+      const sel = document.getElementById('bookingPeriod');
+      if (!sel || !sel.options || sel.options.length < 6) return;
+      sel.options[0].textContent = `Daily Rental ($${Math.round(RATES.daily)} - 24 hrs)`;
+      sel.options[1].textContent = `Weekend Special ($${Math.round(RATES.weekend)} - Fri-Sun)`;
+      sel.options[2].textContent = `3-Day Rental ($${Math.round(RATES.threeDay)} - 72 hrs)`;
+      sel.options[3].textContent = `Multi-Day Custom Range (Tiered Rate)`;
+      sel.options[4].textContent = `Weekly Rental ($${Math.round(RATES.weekly)} - 7 days)`;
+      sel.options[5].textContent = `Monthly Rental ($${Math.round(RATES.monthly)} - 30 days)`;
+    }
+
     // Fleet Box Selection handler
     function selectFleetTrailer(trailerId, trailerName) {
       currentTrailerId = trailerId;
       currentTrailerName = trailerName;
+
+      // Apply dynamic CMS rates for this specific trailer
+      applyTrailerPricing();
 
       // Update Box Card Active States
       document.getElementById('fleetBox1').classList.toggle('active', trailerId === 'trailer-1');
