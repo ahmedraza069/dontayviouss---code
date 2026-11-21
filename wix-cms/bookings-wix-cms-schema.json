@@ -1,0 +1,25 @@
+{
+  "collectionName": "Bookings",
+  "collectionId": "Bookings",
+  "permissions": "Form submitters can create, Only Admin can read/update",
+  "fields": [
+    { "fieldKey": "title", "fieldName": "Booking Reference", "type": "Text", "required": true, "example": "LD-83921" },
+    { "fieldKey": "customerName", "fieldName": "Full Name", "type": "Text", "required": true, "example": "John Doe" },
+    { "fieldKey": "phone", "fieldName": "Phone Number", "type": "Text", "required": true, "example": "(662) 555-0199" },
+    { "fieldKey": "email", "fieldName": "Email Address", "type": "Text", "required": true, "example": "john@example.com" },
+    { "fieldKey": "driverLicense", "fieldName": "Driver License State & Number", "type": "Text", "required": true, "example": "MS - 123456789" },
+    { "fieldKey": "trailerId", "fieldName": "Trailer ID / Slug", "type": "Text", "required": true, "example": "trailer-1" },
+    { "fieldKey": "trailerName", "fieldName": "Trailer Name", "type": "Text", "required": true, "example": "Trailer #1: 6x12 Utility Trailer" },
+    { "fieldKey": "rentalTier", "fieldName": "Rental Duration Tier", "type": "Text", "required": true, "example": "daily / weekend / 3day / weekly / monthly" },
+    { "fieldKey": "pickupDate", "fieldName": "Pickup Date & Time", "type": "Date and Time", "required": true, "example": "2026-11-25T08:00:00" },
+    { "fieldKey": "returnDate", "fieldName": "Return Date & Time", "type": "Date and Time", "required": true, "example": "2026-11-26T08:00:00" },
+    { "fieldKey": "towVehicle", "fieldName": "Tow Vehicle (Year/Make/Model)", "type": "Text", "required": true, "example": "2022 Ford F-150" },
+    { "fieldKey": "rentalFee", "fieldName": "Rental Charge ($)", "type": "Number", "required": true, "example": 45 },
+    { "fieldKey": "securityDeposit", "fieldName": "Refundable Security Deposit ($)", "type": "Number", "required": true, "example": 100 },
+    { "fieldKey": "totalHoldAmount", "fieldName": "Total Charge & Hold ($)", "type": "Number", "required": true, "example": 145 },
+    { "fieldKey": "intendedUse", "fieldName": "Intended Hauling Purpose", "type": "Text", "required": false, "example": "Hauling zero turn mower" },
+    { "fieldKey": "additionalComments", "fieldName": "Customer Notes", "type": "Text", "required": false, "example": "Will pickup at 9am" },
+    { "fieldKey": "status", "fieldName": "Reservation Status", "type": "Text", "required": true, "example": "PENDING_APPROVAL" },
+    { "fieldKey": "depositStatus", "fieldName": "Deposit Status", "type": "Text", "required": true, "example": "PENDING" }
+  ]
+}
