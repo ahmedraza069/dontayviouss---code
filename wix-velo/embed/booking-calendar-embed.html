@@ -3,26 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>L&D Trailers - Dynamic Booking & Availability Calendar</title>
+  <title>L&D Trailers - Availability Calendar & Reservation Request</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,700&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&family=Russo+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     :root {
       --bg-pitch: #0A0A0C;
       --bg-card: #141619;
-      --bg-input: #1C1E23;
+      --bg-input: #0E1013;
+      --border-silver: #2E323B;
       --red-primary: #E60000;
       --red-hover: #FF1A1A;
+      --red-glow: rgba(230, 0, 0, 0.4);
+      --red-subtle: rgba(230, 0, 0, 0.15);
       --silver-light: #C0C5CE;
-      --silver-muted: #8E95A5;
-      --border-silver: #2E323B;
-      --green-available: #00C853;
-      --red-booked: #D50000;
+      --silver-dark: #8E95A5;
+      --text-muted: #6B7280;
+      --text-white: #FFFFFF;
       --font-heading: 'Russo One', sans-serif;
-      --font-accent: 'Chakra Petch', sans-serif;
+      --font-subheading: 'Chakra Petch', sans-serif;
       --font-body: 'Inter', sans-serif;
-      --font-number: 'Montserrat', sans-serif;
+      --font-price: 'Montserrat', sans-serif;
     }
 
     * {
@@ -40,90 +43,68 @@
       padding: 20px;
     }
 
-    .booking-wrapper {
-      max-width: 1200px;
+    .text-red {
+      color: var(--red-primary) !important;
+    }
+
+    .booking-layout-grid {
+      max-width: 1250px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 1fr 1.35fr;
-      gap: 32px;
-      align-items: start;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 2.5rem;
+      align-items: flex-start;
     }
 
     @media (max-width: 992px) {
-      .booking-wrapper {
+      .booking-layout-grid {
         grid-template-columns: 1fr;
+        gap: 2rem;
       }
     }
 
-    /* Left Column: Calendar & Fleet Cards */
-    .left-col {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-
-    .card-panel {
+    /* --------------------------------------------------------------------------
+       LEFT: REAL-TIME AVAILABILITY CALENDAR
+       -------------------------------------------------------------------------- */
+    .calendar-card {
       background: var(--bg-card);
       border: 1px solid var(--border-silver);
       border-radius: 8px;
-      padding: 24px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      padding: 2rem;
+      margin-bottom: 2rem;
     }
 
-    .panel-header {
-      margin-bottom: 18px;
-      border-bottom: 1px solid var(--border-silver);
-      padding-bottom: 12px;
-    }
-
-    .panel-eyebrow {
-      font-family: var(--font-accent);
-      color: var(--red-primary);
-      font-size: 0.82rem;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-    }
-
-    .panel-title {
-      font-family: var(--font-heading);
-      font-size: 1.45rem;
-      color: #FFFFFF;
-      text-transform: uppercase;
-      margin-top: 4px;
-    }
-
-    .panel-subtitle {
-      font-size: 0.85rem;
-      color: var(--silver-muted);
-      margin-top: 4px;
-    }
-
-    /* Interactive Calendar Styling */
-    .calendar-container {
-      background: #0E1013;
-      border: 1px solid var(--border-silver);
-      border-radius: 6px;
-      padding: 16px;
-    }
-
-    .calendar-header-bar {
+    .calendar-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
     }
 
-    .cal-month-title {
-      font-family: var(--font-accent);
-      font-size: 1.15rem;
-      font-weight: 700;
+    .calendar-header h2 {
+      font-family: var(--font-heading);
+      font-size: 1.3rem;
       color: #FFFFFF;
+      margin-bottom: 0.2rem;
       text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
-    .cal-nav-btn {
-      background: var(--bg-card);
+    .calendar-header p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .cal-controls {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .cal-btn {
+      background: #0A0A0C;
       border: 1px solid var(--border-silver);
       color: #FFFFFF;
       width: 32px;
@@ -136,690 +117,687 @@
       transition: all 0.2s;
     }
 
-    .cal-nav-btn:hover {
+    .cal-btn:hover {
       border-color: var(--red-primary);
       color: var(--red-primary);
     }
 
-    .cal-weekdays {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      text-align: center;
-      font-family: var(--font-accent);
-      font-size: 0.8rem;
+    #calendarMonthLabel {
+      font-family: var(--font-heading);
       font-weight: 700;
-      color: var(--silver-muted);
-      margin-bottom: 10px;
+      color: #FFFFFF;
+      min-width: 140px;
+      text-align: center;
+      font-size: 1rem;
     }
 
-    .cal-days-grid {
+    .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 6px;
+      gap: 0.4rem;
+      text-align: center;
     }
 
-    .cal-day-cell {
+    .calendar-day-header {
+      font-family: var(--font-heading);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      padding: 0.4rem 0;
+    }
+
+    .calendar-cell {
       aspect-ratio: 1;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      border-radius: 4px;
-      font-family: var(--font-number);
-      font-size: 0.9rem;
-      font-weight: 700;
+      background: var(--bg-pitch);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 2px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--silver-light);
       cursor: pointer;
-      transition: all 0.2s;
-      position: relative;
-      border: 1px solid transparent;
+      transition: all 0.2s ease;
     }
 
-    .cal-day-cell.empty {
-      cursor: default;
-      background: transparent;
+    .calendar-cell.available:hover {
+      background: var(--red-subtle);
+      border-color: var(--red-primary);
+      color: #FFF;
     }
 
-    .cal-day-cell.available {
-      background: rgba(0, 200, 83, 0.12);
-      border-color: rgba(0, 200, 83, 0.35);
-      color: #00E676;
+    .calendar-cell.selected {
+      background: var(--red-primary) !important;
+      color: #FFF !important;
+      border-color: var(--red-primary) !important;
+      font-weight: 700;
+      box-shadow: 0 0 10px var(--red-glow);
     }
 
-    .cal-day-cell.available:hover {
-      background: var(--green-available);
-      color: #000;
-      transform: scale(1.05);
-      font-weight: 900;
-      box-shadow: 0 0 12px rgba(0, 200, 83, 0.5);
-    }
-
-    .cal-day-cell.booked {
-      background: rgba(213, 0, 0, 0.15);
-      border-color: rgba(213, 0, 0, 0.4);
-      color: #FF5252;
+    .calendar-cell.booked {
+      background: rgba(255, 255, 255, 0.03);
+      color: #454A54;
       cursor: not-allowed;
       text-decoration: line-through;
     }
 
-    .cal-day-cell.selected {
-      background: var(--red-primary) !important;
-      color: #FFF !important;
-      border-color: #FFF !important;
-      box-shadow: 0 0 14px rgba(230, 0, 0, 0.7);
+    .calendar-legend-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.25rem;
+      font-size: 0.8rem;
+      color: var(--silver-dark);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding-top: 1rem;
     }
 
-    .cal-legend {
+    .legend-dots {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 14px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border-silver);
+      gap: 1rem;
+    }
+
+    .btn-link-demo {
+      background: none;
+      border: none;
+      color: var(--silver-light);
+      text-decoration: underline;
+      cursor: pointer;
       font-size: 0.8rem;
     }
 
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--silver-light);
-    }
-
-    .dot-avail {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--green-available);
-      box-shadow: 0 0 6px var(--green-available);
-    }
-
-    .dot-booked {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--red-booked);
-      box-shadow: 0 0 6px var(--red-booked);
-    }
-
-    /* Fleet Selector Cards */
-    .fleet-cards-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    @media (max-width: 500px) {
-      .fleet-cards-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .fleet-card-btn {
-      background: #0E1013;
-      border: 1px solid var(--border-silver);
-      border-radius: 6px;
-      padding: 14px;
-      text-align: left;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      position: relative;
-    }
-
-    .fleet-card-btn:hover {
-      border-color: var(--red-primary);
-      background: #181A20;
-    }
-
-    .fleet-card-btn.active {
-      border: 2px solid var(--red-primary);
-      background: #1C0505;
-      box-shadow: 0 0 15px rgba(230, 0, 0, 0.25);
-    }
-
-    .fleet-card-tag {
-      font-family: var(--font-accent);
-      font-size: 0.75rem;
-      font-weight: 700;
+    .btn-link-demo:hover {
       color: var(--red-primary);
-      text-transform: uppercase;
-      letter-spacing: 1px;
     }
 
-    .fleet-card-name {
-      font-family: var(--font-heading);
-      font-size: 1rem;
-      color: #FFFFFF;
-      margin: 4px 0 6px 0;
-    }
-
-    .fleet-card-specs {
-      font-size: 0.78rem;
-      color: var(--silver-muted);
-      line-height: 1.4;
-    }
-
-    /* Right Column: Reservation Request Form */
-    .form-panel {
+    /* Fleet Summary Card */
+    .industrial-card {
       background: var(--bg-card);
       border: 1px solid var(--border-silver);
       border-radius: 8px;
-      padding: 28px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+      padding: 1.8rem;
     }
 
-    .notice-box {
-      background: rgba(230, 0, 0, 0.08);
-      border-left: 3px solid var(--red-primary);
+    .industrial-card h3 {
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      color: #FFFFFF;
+    }
+
+    .fleet-item-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--bg-pitch);
+      padding: 0.75rem;
       border-radius: 4px;
-      padding: 12px 16px;
-      margin-bottom: 24px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .fleet-item-row:hover {
+      border-color: var(--border-silver);
+    }
+
+    .fleet-item-row.active {
+      border-color: var(--red-primary);
+      background: #190505;
+    }
+
+    .fleet-thumb {
+      width: 70px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* --------------------------------------------------------------------------
+       RIGHT: 10-FIELD ONLINE RESERVATION REQUEST FORM
+       -------------------------------------------------------------------------- */
+    .booking-form-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-silver);
+      padding: 2.5rem 2.2rem;
+      border-radius: 8px;
+      position: relative;
+    }
+
+    .section-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: var(--red-primary);
+      font-family: var(--font-heading);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .section-eyebrow::before,
+    .section-eyebrow::after {
+      content: "";
+      height: 2px;
+      width: 28px;
+      background-color: var(--red-primary);
+    }
+
+    .booking-form-card h2 {
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      color: #FFFFFF;
+      margin-bottom: 1.25rem;
+      text-transform: uppercase;
+    }
+
+    .approval-alert-box {
+      background: rgba(230, 0, 0, 0.1);
+      border: 1px solid var(--red-primary);
+      padding: 1.25rem 1.4rem;
+      border-radius: 4px;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .approval-alert-icon {
+      font-size: 1.4rem;
+      color: var(--red-primary);
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .approval-alert-text {
       font-size: 0.88rem;
       color: var(--silver-light);
+      line-height: 1.5;
     }
 
-    .notice-box strong {
+    .approval-alert-text strong {
       color: #FFFFFF;
       text-transform: uppercase;
     }
 
-    .form-grid-2col {
+    .form-group {
+      margin-bottom: 1.35rem;
+    }
+
+    .form-row-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 16px;
+      gap: 1.25rem;
     }
 
     @media (max-width: 600px) {
-      .form-grid-2col {
+      .form-row-2 {
         grid-template-columns: 1fr;
       }
     }
 
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 16px;
-    }
-
     .form-label {
-      font-family: var(--font-accent);
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #FFFFFF;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      font-family: var(--font-heading);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
     }
 
-    .form-label-badge {
-      font-size: 0.72rem;
-      color: var(--green-available);
+    .form-helper-badge {
+      font-size: 0.78rem;
+      color: var(--red-primary);
       font-weight: 600;
       font-family: var(--font-body);
+      text-transform: none;
     }
 
-    .form-input, .form-select, .form-textarea {
+    .form-input,
+    .form-select,
+    .form-textarea {
       width: 100%;
       background: var(--bg-input);
       border: 1px solid var(--border-silver);
       border-radius: 4px;
-      padding: 11px 14px;
+      padding: 0.9rem 1.1rem;
       color: #FFFFFF;
       font-family: var(--font-body);
       font-size: 0.95rem;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
     }
 
-    .form-input:focus, .form-select:focus, .form-textarea:focus {
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
       outline: none;
       border-color: var(--red-primary);
-      box-shadow: 0 0 10px rgba(230, 0, 0, 0.3);
-      background: #23262D;
+      background: #16181D;
+      box-shadow: 0 0 10px rgba(230, 0, 0, 0.25);
     }
 
     .form-select option {
       background: #141619;
-      color: #FFF;
-    }
-
-    /* Live Estimated Price Summary Card */
-    .summary-card {
-      background: #0E1013;
-      border: 1px solid var(--border-silver);
-      border-top: 3px solid var(--red-primary);
-      border-radius: 6px;
-      padding: 20px;
-      margin: 24px 0;
-    }
-
-    .summary-header {
-      font-family: var(--font-heading);
-      font-size: 1.15rem;
       color: #FFFFFF;
+    }
+
+    /* Price Breakdown Box */
+    .price-breakdown-box {
+      background: #0B0D10;
+      border: 1px solid var(--border-silver);
+      border-radius: 4px;
+      padding: 1.4rem;
+      margin: 1.8rem 0;
+    }
+
+    .price-breakdown-title {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--silver-light);
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 0.6rem;
+      margin-bottom: 1rem;
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      gap: 0.5rem;
     }
 
-    .summary-unit-badge {
-      font-family: var(--font-accent);
-      font-size: 0.88rem;
-      color: var(--silver-light);
-      margin-bottom: 14px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border-silver);
-    }
-
-    .summary-row {
+    .price-line-item {
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-size: 0.92rem;
       color: var(--silver-light);
-      margin-bottom: 10px;
+      margin-bottom: 0.6rem;
     }
 
-    .summary-amount {
-      font-family: var(--font-number);
-      font-weight: 800;
+    .price-line-item strong {
       color: #FFFFFF;
-      font-size: 1.05rem;
+      font-family: var(--font-price);
+      font-weight: 700;
     }
 
-    .summary-total-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 14px;
-      padding-top: 14px;
+    .price-line-item.total-line {
       border-top: 1px solid var(--border-silver);
-    }
-
-    .total-title {
+      padding-top: 0.9rem;
+      margin-top: 0.9rem;
       font-family: var(--font-heading);
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       color: #FFFFFF;
-      text-transform: uppercase;
     }
 
-    .total-price {
-      font-family: var(--font-number);
-      font-size: 1.85rem;
+    .price-line-item.total-line .price-val {
+      font-family: var(--font-price);
+      font-size: 1.6rem;
       font-weight: 900;
       color: var(--red-primary);
-      text-shadow: 0 0 12px rgba(230, 0, 0, 0.4);
     }
 
-    .summary-disclaimer {
-      font-size: 0.78rem;
-      color: var(--silver-muted);
-      margin-top: 12px;
-      line-height: 1.4;
-    }
-
-    /* Submit Button */
-    .submit-btn {
+    .btn-submit-booking {
       width: 100%;
       background: var(--red-primary);
       color: #FFFFFF;
       border: none;
-      border-radius: 4px;
-      padding: 16px;
-      font-family: var(--font-accent);
+      padding: 1.2rem;
+      font-family: var(--font-heading);
       font-size: 1.15rem;
       font-weight: 700;
-      letter-spacing: 1.5px;
       text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-radius: 4px;
       cursor: pointer;
+      transition: all 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      transition: all 0.25s ease;
-      box-shadow: 0 4px 20px rgba(230, 0, 0, 0.35);
+      gap: 0.6rem;
+      box-shadow: 0 4px 15px rgba(230, 0, 0, 0.3);
     }
 
-    .submit-btn:hover {
+    .btn-submit-booking:hover {
       background: var(--red-hover);
-      box-shadow: 0 6px 28px rgba(230, 0, 0, 0.6);
+      box-shadow: 0 6px 25px rgba(230, 0, 0, 0.5);
       transform: translateY(-2px);
     }
 
-    .submit-btn:active {
+    .btn-submit-booking:active {
       transform: translateY(0);
     }
 
-    .status-alert {
+    .alert-msg {
       display: none;
-      margin-top: 16px;
-      padding: 14px;
+      margin-top: 1.25rem;
+      padding: 1rem;
       border-radius: 4px;
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       text-align: center;
     }
 
-    .status-alert.success {
+    .alert-msg.success {
       display: block;
-      background: rgba(0, 200, 83, 0.15);
-      border: 1px solid var(--green-available);
-      color: #00E676;
-    }
-
-    .status-alert.error {
-      display: block;
-      background: rgba(213, 0, 0, 0.15);
-      border: 1px solid var(--red-primary);
-      color: #FF5252;
+      background: rgba(46, 204, 113, 0.15);
+      border: 1px solid #2ECC71;
+      color: #2ECC71;
     }
   </style>
 </head>
 <body>
 
-  <div class="booking-wrapper">
+  <div class="booking-layout-grid">
     
-    <!-- LEFT COLUMN: AVAILABILITY CALENDAR & CURRENT FLEET -->
-    <div class="left-col">
-      
-      <!-- Panel 1: Availability Calendar -->
-      <div class="card-panel">
-        <div class="panel-header">
-          <div class="panel-eyebrow">Real-Time Schedule</div>
-          <h2 class="panel-title">AVAILABILITY CALENDAR</h2>
-          <p class="panel-subtitle">Click any green available date to pre-fill your pickup date below.</p>
+    <!-- LEFT: REAL-TIME AVAILABILITY CALENDAR & FLEET PREVIEW -->
+    <div>
+      <div class="calendar-card">
+        <div class="calendar-header">
+          <div>
+            <h2><i class="fa-regular fa-calendar-days text-red"></i> AVAILABILITY CALENDAR</h2>
+            <p>Click any green available date to pre-fill your pickup date below.</p>
+          </div>
+          <div class="cal-controls">
+            <button type="button" class="cal-btn" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <span id="calendarMonthLabel">November 2026</span>
+            <button type="button" class="cal-btn" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+          </div>
         </div>
 
-        <div class="calendar-container">
-          <div class="calendar-header-bar">
-            <button type="button" class="cal-nav-btn" id="prevMonthBtn">&lt;</button>
-            <div class="cal-month-title" id="calendarMonthTitle">November 2026</div>
-            <button type="button" class="cal-nav-btn" id="nextMonthBtn">&gt;</button>
-          </div>
+        <div class="calendar-grid" id="calendarDaysGrid">
+          <!-- Populated by JavaScript -->
+        </div>
 
-          <div class="cal-weekdays">
-            <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+        <div class="calendar-legend-bar">
+          <div class="legend-dots">
+            <span><i class="fa-solid fa-circle" style="color: #2ECC71; font-size: 0.65rem;"></i> Available</span>
+            <span><i class="fa-solid fa-circle text-red" style="font-size: 0.65rem;"></i> Booked / Reserved</span>
           </div>
-
-          <div class="cal-days-grid" id="calendarDaysGrid">
-            <!-- Populated dynamically via JS -->
-          </div>
-
-          <div class="cal-legend">
-            <div class="legend-item"><span class="dot-avail"></span> Available</div>
-            <div class="legend-item"><span class="dot-booked"></span> Booked / Reserved</div>
-            <div style="color: var(--silver-muted); font-size: 0.75rem;">[Owner Mode: Block Dates]</div>
-          </div>
+          <button type="button" class="btn-link-demo" onclick="toggleBlockedDemo()">
+            [Owner Mode: Block Dates]
+          </button>
         </div>
       </div>
 
-      <!-- Panel 2: Current Initial Fleet Selection -->
-      <div class="card-panel">
-        <div class="panel-header">
-          <div class="panel-eyebrow">Equipment Selection</div>
-          <h2 class="panel-title">CURRENT INITIAL FLEET</h2>
-          <p class="panel-subtitle">Select a trailer unit to update rates and availability.</p>
-        </div>
-
-        <div class="fleet-cards-grid">
+      <!-- Quick Fleet Card Summary -->
+      <div class="industrial-card">
+        <h3>CURRENT INITIAL FLEET</h3>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
           
-          <div class="fleet-card-btn active" id="fleetCard1" onclick="selectFleetTrailer('trailer-1', 'Trailer #1: 6x12 Utility Trailer')">
-            <div class="fleet-card-tag">Trailer 1</div>
-            <div class="fleet-card-name">Trailer #1: 6x12 Utility Trailer</div>
-            <div class="fleet-card-specs">Tandem Axle • Chrome Wheels • Ramp Gate</div>
+          <div class="fleet-item-row active" id="fleetRow1" onclick="selectFleetTrailer('trailer-1', 'Trailer #1: 6x12 Utility Trailer')">
+            <img src="https://raw.githubusercontent.com/ahmedraza069/dontayviouss---code/main/assets/trailer-1.jpg" alt="Trailer 1" class="fleet-thumb">
+            <div>
+              <strong style="color: #FFF; font-size: 0.95rem;">Trailer #1: 6x12 Utility Trailer</strong>
+              <div style="font-size: 0.8rem; color: var(--silver-dark);">Tandem Axle &bull; Chrome Wheels &bull; Ramp Gate</div>
+            </div>
           </div>
 
-          <div class="fleet-card-btn" id="fleetCard2" onclick="selectFleetTrailer('trailer-2', 'Trailer #2: 6x12 Utility Trailer')">
-            <div class="fleet-card-tag">Trailer 2</div>
-            <div class="fleet-card-name">Trailer #2: 6x12 Utility Trailer</div>
-            <div class="fleet-card-specs">Hardwood Deck • D-Rings • Spring-Assist Ramp</div>
+          <div class="fleet-item-row" id="fleetRow2" onclick="selectFleetTrailer('trailer-2', 'Trailer #2: 6x12 Utility Trailer')">
+            <img src="https://raw.githubusercontent.com/ahmedraza069/dontayviouss---code/main/assets/trailer-wood-deck.jpg" alt="Trailer 2" class="fleet-thumb">
+            <div>
+              <strong style="color: #FFF; font-size: 0.95rem;">Trailer #2: 6x12 Utility Trailer</strong>
+              <div style="font-size: 0.8rem; color: var(--silver-dark);">Hardwood Deck &bull; D-Rings &bull; Spring-Assist Ramp</div>
+            </div>
           </div>
 
         </div>
       </div>
-
     </div>
 
-    <!-- RIGHT COLUMN: ONLINE RESERVATION REQUEST FORM -->
-    <div class="form-panel">
-      <div class="panel-header">
-        <div class="panel-eyebrow">Online Reservation Request</div>
-        <h1 class="panel-title" style="font-size: 1.85rem;">RESERVE YOUR TRAILER</h1>
+    <!-- RIGHT: THE COMPLETE 10-FIELD BOOKING REQUEST FORM -->
+    <div>
+      <div class="booking-form-card">
+        <div class="section-eyebrow">ONLINE RESERVATION REQUEST</div>
+        <h2>RESERVE YOUR TRAILER</h2>
+
+        <div class="approval-alert-box">
+          <i class="fa-solid fa-triangle-exclamation approval-alert-icon"></i>
+          <div class="approval-alert-text">
+            <strong>IMPORTANT:</strong> Submitting a booking request does not guarantee availability. All booking requests are reviewed and approved by L&amp;D Trailers before the rental is confirmed.
+          </div>
+        </div>
+
+        <form id="onlineBookingForm" onsubmit="handleBookingSubmit(event)">
+          
+          <!-- Field 1: Customer's Full Name -->
+          <div class="form-group">
+            <label class="form-label" for="bookingName">1. Customer's Full Name *</label>
+            <input type="text" id="bookingName" class="form-input" placeholder="e.g. Johnathan Smith" required>
+          </div>
+
+          <!-- Field 2 & 3: Phone Number & Email Address -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="bookingPhone">2. Phone Number *</label>
+              <input type="tel" id="bookingPhone" class="form-input" placeholder="e.g. (662) 555-0199" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="bookingEmail">3. Email Address *</label>
+              <input type="email" id="bookingEmail" class="form-input" placeholder="e.g. john@example.com" required>
+            </div>
+          </div>
+
+          <!-- Field 4: Driver's License Info -->
+          <div class="form-group">
+            <label class="form-label" for="bookingDL">
+              <span>4. Driver's License Information *</span>
+              <span class="form-helper-badge"><i class="fa-solid fa-shield-check"></i> Verified securely at pickup</span>
+            </label>
+            <input type="text" id="bookingDL" class="form-input" placeholder="State &amp; Driver's License # (e.g. MS - S1234567)" required>
+          </div>
+
+          <!-- Field 5 & 6: Requested Trailer & Rental Period -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="bookingTrailer">5. Requested Trailer *</label>
+              <select id="bookingTrailer" class="form-select" onchange="onTrailerSelectChange(this.value)" required>
+                <option value="trailer-1" selected>Trailer #1: 6x12 Utility Trailer</option>
+                <option value="trailer-2">Trailer #2: 6x12 Utility Trailer</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="bookingPeriod">6. Rental Period *</label>
+              <select id="bookingPeriod" class="form-select" onchange="updateLivePricing()" required>
+                <option value="daily" selected>Daily Rental ($45 - 24 hrs)</option>
+                <option value="weekend">Weekend Special ($85 - Fri-Sun)</option>
+                <option value="3day">3-Day Rental ($115 - 72 hrs)</option>
+                <option value="weekly">Weekly Rental ($225 - 7 days)</option>
+                <option value="monthly">Monthly Rental ($550 - 30 days)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Field 7 & 8: Pickup Date/Time & Return Date/Time -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label class="form-label" for="pickupDateTime">7. Pickup Date and Time *</label>
+              <input type="datetime-local" id="pickupDateTime" class="form-input" required onchange="calculateDurationDates()">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="returnDateTime">8. Return Date and Time *</label>
+              <input type="datetime-local" id="returnDateTime" class="form-input" required>
+            </div>
+          </div>
+
+          <!-- Field 9: Intended Use -->
+          <div class="form-group">
+            <label class="form-label" for="bookingUse">9. Intended Use of Trailer *</label>
+            <input type="text" id="bookingUse" class="form-input" placeholder="e.g. Lawn care equipment, home furniture move, contractor lumber" required>
+          </div>
+
+          <!-- Field 10: Additional Comments -->
+          <div class="form-group">
+            <label class="form-label" for="bookingComments">10. Additional Comments</label>
+            <textarea id="bookingComments" class="form-textarea" rows="3" placeholder="Tow vehicle make/model, hitch ball size (2&quot; standard), or special timing notes..."></textarea>
+          </div>
+
+          <!-- Live Price Breakdown Summary Box (Separate Line Items) -->
+          <div class="price-breakdown-box">
+            <div class="price-breakdown-title">
+              <i class="fa-solid fa-calculator text-red"></i> LIVE ESTIMATED PRICE SUMMARY
+            </div>
+            <div class="price-line-item">
+              <span>Selected Unit:</span>
+              <strong id="summaryTrailerName">Trailer #1: 6x12 Utility Trailer</strong>
+            </div>
+            <div class="price-line-item">
+              <span>1. Rental Payment (<span id="summaryPeriodLabel">Daily - 24 hrs</span>):</span>
+              <strong id="summaryRentalFee">$45.00</strong>
+            </div>
+            <div class="price-line-item">
+              <span>2. Refundable Security Deposit:</span>
+              <strong id="summaryDepositFee">$100.00</strong>
+            </div>
+            <div class="price-line-item total-line">
+              <span>Estimated Total (Before Taxes):</span>
+              <span id="summaryTotalEstimated" class="price-val">$145.00</span>
+            </div>
+            <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.6rem;">
+              * The security deposit is separate from the rental charge and is refunded after inspection.
+            </p>
+          </div>
+
+          <button type="submit" class="btn-submit-booking" id="btnSubmit">
+            <i class="fa-solid fa-paper-plane"></i> SUBMIT BOOKING REQUEST &bull; AUTHORIZE
+          </button>
+
+          <div class="alert-msg" id="alertMsg"></div>
+
+        </form>
       </div>
-
-      <div class="notice-box">
-        <strong>IMPORTANT:</strong> Submitting a booking request does not guarantee availability. All booking requests are reviewed and approved by L&D Trailers before the rental is confirmed.
-      </div>
-
-      <form id="reservationForm" onsubmit="event.preventDefault(); submitBooking();">
-        
-        <!-- 1. Customer's Full Name -->
-        <div class="form-group">
-          <label class="form-label" for="custName">1. Customer's Full Name *</label>
-          <input type="text" id="custName" class="form-input" placeholder="e.g. Johnathan Smith" required>
-        </div>
-
-        <!-- 2. Phone Number & 3. Email Address (2-Column Grid) -->
-        <div class="form-grid-2col">
-          <div class="form-group">
-            <label class="form-label" for="custPhone">2. Phone Number *</label>
-            <input type="tel" id="custPhone" class="form-input" placeholder="e.g. (662) 555-0199" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="custEmail">3. Email Address *</label>
-            <input type="email" id="custEmail" class="form-input" placeholder="e.g. john@example.com" required>
-          </div>
-        </div>
-
-        <!-- 4. Driver's License Information -->
-        <div class="form-group">
-          <label class="form-label" for="custLicense">
-            <span>4. Driver's License Information *</span>
-            <span class="form-label-badge">✔ Verified securely at pickup</span>
-          </label>
-          <input type="text" id="custLicense" class="form-input" placeholder="State & Driver's License # (e.g. MS - S1234567)" required>
-        </div>
-
-        <!-- 5. Requested Trailer & 6. Rental Period (2-Column Grid) -->
-        <div class="form-grid-2col">
-          <div class="form-group">
-            <label class="form-label" for="trailerSelect">5. Requested Trailer *</label>
-            <select id="trailerSelect" class="form-select" onchange="onTrailerChange(this.value)" required>
-              <option value="trailer-1" selected>Trailer #1: 6x12 Utility Trailer</option>
-              <option value="trailer-2">Trailer #2: 6x12 Utility Trailer</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="periodSelect">6. Rental Period *</label>
-            <select id="periodSelect" class="form-select" onchange="calculateRates()" required>
-              <option value="daily" selected>Daily Rental ($45 - 24 hrs)</option>
-              <option value="weekend">Weekend Special ($85 - Fri-Sun)</option>
-              <option value="3day">3-Day Rental ($115 - 72 hrs)</option>
-              <option value="weekly">Weekly Rental ($225 - 7 days)</option>
-              <option value="monthly">Monthly Rental ($550 - 30 days)</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- 7. Pickup Date/Time & 8. Return Date/Time (2-Column Grid) -->
-        <div class="form-grid-2col">
-          <div class="form-group">
-            <label class="form-label" for="pickupDateTime">7. Pickup Date and Time *</label>
-            <input type="datetime-local" id="pickupDateTime" class="form-input" onchange="autoSetReturnDate()" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="returnDateTime">8. Return Date and Time *</label>
-            <input type="datetime-local" id="returnDateTime" class="form-input" required>
-          </div>
-        </div>
-
-        <!-- 9. Intended Use of Trailer -->
-        <div class="form-group">
-          <label class="form-label" for="intendedUse">9. Intended Use of Trailer *</label>
-          <input type="text" id="intendedUse" class="form-input" placeholder="e.g. Lawn care equipment, home furniture move, contractor lumber" required>
-        </div>
-
-        <!-- 10. Additional Comments -->
-        <div class="form-group">
-          <label class="form-label" for="comments">10. Additional Comments</label>
-          <textarea id="comments" class="form-textarea" rows="2" placeholder="Tow vehicle make/model, hitch ball size (2&quot; standard), or special timing notes..."></textarea>
-        </div>
-
-        <!-- LIVE ESTIMATED PRICE SUMMARY CARD -->
-        <div class="summary-card">
-          <div class="summary-header">
-            <span>⚡ LIVE ESTIMATED PRICE SUMMARY</span>
-          </div>
-
-          <div class="summary-unit-badge">
-            <strong>Selected Unit:</strong> <span id="summaryTrailerLabel">Trailer #1: 6x12 Utility Trailer</span>
-          </div>
-
-          <div class="summary-row">
-            <span id="summaryPeriodLabel">1. Rental Payment (DAILY RENTAL - 24 Hours):</span>
-            <span class="summary-amount" id="summaryRentalFee">$45.00</span>
-          </div>
-
-          <div class="summary-row">
-            <span>2. Refundable Security Deposit:</span>
-            <span class="summary-amount" id="summaryDepositFee">$100.00</span>
-          </div>
-
-          <div class="summary-total-row">
-            <span class="total-title">Estimated Total (Before Taxes):</span>
-            <span class="total-price" id="summaryTotal">$145.00</span>
-          </div>
-
-          <div class="summary-disclaimer">
-            * The security deposit is separate from the rental charge and is refunded after inspection.
-          </div>
-        </div>
-
-        <!-- SUBMIT BUTTON -->
-        <button type="submit" class="submit-btn" id="submitBtn">
-          <span>SUBMIT BOOKING REQUEST • AUTHORIZE</span>
-        </button>
-
-        <!-- Status Message Alert Box -->
-        <div class="status-alert" id="statusBox"></div>
-
-      </form>
     </div>
 
   </div>
 
   <script>
-    // Rates & Deposits Configuration (Exact Client Tiers)
-    const TIER_PRICING = {
-      daily: { rate: 45, deposit: 100, label: '1. Rental Payment (DAILY RENTAL - 24 Hours):', hours: 24 },
-      weekend: { rate: 85, deposit: 100, label: '1. Rental Payment (WEEKEND SPECIAL - Fri-Sun):', hours: 72 },
-      '3day': { rate: 115, deposit: 100, label: '1. Rental Payment (3-DAY RENTAL - 72 Hours):', hours: 72 },
-      weekly: { rate: 225, deposit: 150, label: '1. Rental Payment (WEEKLY RENTAL - 7 Days):', hours: 168 },
-      monthly: { rate: 550, deposit: 200, label: '1. Rental Payment (MONTHLY RENTAL - 30 Days):', hours: 720 }
+    // Rates and deposits map
+    const PRICING = {
+      daily: { rate: 45, deposit: 100, hours: 24, label: 'Daily - 24 hrs' },
+      weekend: { rate: 85, deposit: 100, hours: 72, label: 'Weekend - Fri-Sun' },
+      '3day': { rate: 115, deposit: 100, hours: 72, label: '3-Day - 72 hrs' },
+      weekly: { rate: 225, deposit: 150, hours: 168, label: 'Weekly - 7 days' },
+      monthly: { rate: 550, deposit: 200, hours: 720, label: 'Monthly - 30 days' }
     };
 
-    // Blocked Dates State (November & December 2026)
-    let blockedDates = ['2026-11-20', '2026-11-21', '2026-11-22', '2026-11-26', '2026-11-27', '2026-12-05', '2026-12-25'];
-    let currentYear = 2026;
-    let currentMonth = 10; // 0-indexed: 10 = November
+    // Calendar state
+    let calendarCurrentDate = new Date(2026, 10, 1); // November 2026
+    let selectedBookingDate = '2026-11-24'; // Pre-selected Day 24 matching screenshot
+    let blockedDates = ['2026-11-20', '2026-11-21', '2026-11-22'];
 
-    // Initialize Page
-    window.addEventListener('DOMContentLoaded', () => {
-      initInitialDates();
-      renderCalendar(currentYear, currentMonth);
-      calculateRates();
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCalendar();
+      initDefaultDates();
+      updateLivePricing();
 
-      // Listen for message from Wix Velo parent if embedded inside Wix Studio
+      // Listen for CMS updates from Wix Velo
       window.addEventListener('message', (event) => {
-        if (event.data && event.data.type === 'WIX_CMS_DATA') {
-          if (event.data.blockedDates && Array.isArray(event.data.blockedDates)) {
-            blockedDates = event.data.blockedDates;
-            renderCalendar(currentYear, currentMonth);
-          }
+        if (event.data && event.data.type === 'WIX_CMS_DATA' && Array.isArray(event.data.blockedDates)) {
+          blockedDates = event.data.blockedDates;
+          renderCalendar();
         }
         if (event.data && event.data.type === 'BOOKING_SUBMITTED_SUCCESS') {
-          showStatus(event.data.message || 'Booking Request Submitted! Status: PENDING_APPROVAL.', 'success');
+          showAlert(event.data.message || 'Booking Request Submitted! Status: PENDING_APPROVAL.', 'success');
         }
       });
     });
 
-    // Calendar Navigation
-    document.getElementById('prevMonthBtn').addEventListener('click', () => {
-      currentMonth--;
-      if (currentMonth < 0) { currentMonth = 11; currentYear--; }
-      renderCalendar(currentYear, currentMonth);
-    });
+    // Month Navigation
+    function changeMonth(delta) {
+      calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() + delta);
+      renderCalendar();
+    }
 
-    document.getElementById('nextMonthBtn').addEventListener('click', () => {
-      currentMonth++;
-      if (currentMonth > 11) { currentMonth = 0; currentYear++; }
-      renderCalendar(currentYear, currentMonth);
-    });
-
-    // Render Calendar Grid
-    function renderCalendar(year, month) {
-      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-      document.getElementById('calendarMonthTitle').innerText = `${monthNames[month]} ${year}`;
-
+    // Render Calendar matching screenshot exactly
+    function renderCalendar() {
       const grid = document.getElementById('calendarDaysGrid');
+      const label = document.getElementById('calendarMonthLabel');
+      if (!grid || !label) return;
+
+      const year = calendarCurrentDate.getFullYear();
+      const month = calendarCurrentDate.getMonth();
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      label.textContent = `${monthNames[month]} ${year}`;
+
       grid.innerHTML = '';
 
-      const firstDayIndex = new Date(year, month, 1).getDay();
-      const totalDays = new Date(year, month + 1, 0).getDate();
+      // Weekday Headers
+      const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+      dayNames.forEach(d => {
+        const h = document.createElement('div');
+        h.className = 'calendar-day-header';
+        h.textContent = d;
+        grid.appendChild(h);
+      });
 
-      // Empty prefix cells
+      // Blank filler cells
+      const firstDayIndex = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
       for (let i = 0; i < firstDayIndex; i++) {
-        const emptyCell = document.createElement('div');
-        emptyCell.className = 'cal-day-cell empty';
-        grid.appendChild(emptyCell);
+        const blank = document.createElement('div');
+        blank.className = 'calendar-cell';
+        blank.style.opacity = '0.15';
+        grid.appendChild(blank);
       }
 
-      // Actual Day cells
-      for (let d = 1; d <= totalDays; d++) {
+      // Render Day Cells
+      for (let day = 1; day <= daysInMonth; day++) {
         const cell = document.createElement('div');
-        const monthStr = String(month + 1).padStart(2, '0');
-        const dayStr = String(d).padStart(2, '0');
-        const dateIso = `${year}-${monthStr}-${dayStr}`;
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        cell.className = 'calendar-cell';
+        cell.textContent = day;
 
-        cell.innerText = d;
-        cell.dataset.date = dateIso;
-
-        if (blockedDates.includes(dateIso)) {
-          cell.className = 'cal-day-cell booked';
-          cell.title = 'Booked / Blocked Date';
+        if (blockedDates.includes(dateStr)) {
+          cell.classList.add('booked');
+          cell.title = 'Reserved / Unavailable';
         } else {
-          cell.className = 'cal-day-cell available';
-          cell.title = 'Available - Click to select';
-          cell.onclick = () => selectCalendarDate(dateIso, cell);
+          cell.classList.add('available');
+          cell.title = 'Available - Click to Select Pickup Date';
+
+          // Selected Day highlight (Day 24 solid red)
+          if (selectedBookingDate === dateStr) {
+            cell.classList.add('selected');
+          }
+
+          cell.addEventListener('click', () => {
+            selectCalendarDate(dateStr);
+          });
         }
 
         grid.appendChild(cell);
       }
     }
 
-    // Select Calendar Date & Pre-fill Form
-    function selectCalendarDate(dateIso, cellElement) {
-      document.querySelectorAll('.cal-day-cell').forEach(c => c.classList.remove('selected'));
-      cellElement.classList.add('selected');
+    // Date selection
+    function selectCalendarDate(dateStr) {
+      selectedBookingDate = dateStr;
+      renderCalendar();
 
-      const pickupField = document.getElementById('pickupDateTime');
-      pickupField.value = `${dateIso}T08:00`;
-      autoSetReturnDate();
-
-      pickupField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const pickupInput = document.getElementById('pickupDateTime');
+      if (pickupInput) {
+        pickupInput.value = `${dateStr}T08:00`;
+        calculateDurationDates();
+      }
     }
 
-    // Auto set Return Date based on rental tier hours
-    function autoSetReturnDate() {
-      const pickupVal = document.getElementById('pickupDateTime').value;
+    // Auto set Return Date
+    function calculateDurationDates() {
+      const pickupInput = document.getElementById('pickupDateTime');
+      const returnInput = document.getElementById('returnDateTime');
+      const periodSelect = document.getElementById('bookingPeriod');
+      if (!pickupInput || !returnInput || !periodSelect) return;
+
+      const pickupVal = pickupInput.value;
       if (!pickupVal) return;
 
-      const tierKey = document.getElementById('periodSelect').value || 'daily';
-      const hoursToAdd = TIER_PRICING[tierKey].hours;
+      const tierKey = periodSelect.value || 'daily';
+      const hoursToAdd = PRICING[tierKey].hours;
 
       const pDate = new Date(pickupVal);
       pDate.setHours(pDate.getHours() + hoursToAdd);
@@ -830,112 +808,102 @@
       const hr = String(pDate.getHours()).padStart(2, '0');
       const mi = String(pDate.getMinutes()).padStart(2, '0');
 
-      document.getElementById('returnDateTime').value = `${yr}-${mo}-${da}T${hr}:${mi}`;
+      returnInput.value = `${yr}-${mo}-${da}T${hr}:${mi}`;
     }
 
-    // Fleet selection handler
+    // Initial dates setup (Pre-fills Day 24 matching screenshot)
+    function initDefaultDates() {
+      const pickupInput = document.getElementById('pickupDateTime');
+      if (pickupInput) {
+        pickupInput.value = '2026-11-24T08:00';
+        calculateDurationDates();
+      }
+    }
+
+    // Fleet selection
     function selectFleetTrailer(trailerId, trailerName) {
-      document.getElementById('fleetCard1').classList.toggle('active', trailerId === 'trailer-1');
-      document.getElementById('fleetCard2').classList.toggle('active', trailerId === 'trailer-2');
-      document.getElementById('trailerSelect').value = trailerId;
-      document.getElementById('summaryTrailerLabel').innerText = trailerName;
+      document.getElementById('fleetRow1').classList.toggle('active', trailerId === 'trailer-1');
+      document.getElementById('fleetRow2').classList.toggle('active', trailerId === 'trailer-2');
+      document.getElementById('bookingTrailer').value = trailerId;
+      document.getElementById('summaryTrailerName').textContent = trailerName;
     }
 
-    function onTrailerChange(trailerId) {
+    function onTrailerSelectChange(trailerId) {
       const name = trailerId === 'trailer-1' ? 'Trailer #1: 6x12 Utility Trailer' : 'Trailer #2: 6x12 Utility Trailer';
       selectFleetTrailer(trailerId, name);
     }
 
-    // Rate Calculation
-    function calculateRates() {
-      const tierKey = document.getElementById('periodSelect').value || 'daily';
-      const tier = TIER_PRICING[tierKey];
+    // Live Price Update
+    function updateLivePricing() {
+      const period = document.getElementById('bookingPeriod').value || 'daily';
+      const tier = PRICING[period];
 
-      document.getElementById('summaryPeriodLabel').innerText = tier.label;
-      document.getElementById('summaryRentalFee').innerText = `$${tier.rate.toFixed(2)}`;
-      document.getElementById('summaryDepositFee').innerText = `$${tier.deposit.toFixed(2)}`;
+      document.getElementById('summaryPeriodLabel').textContent = tier.label;
+      document.getElementById('summaryRentalFee').textContent = `$${tier.rate.toFixed(2)}`;
+      document.getElementById('summaryDepositFee').textContent = `$${tier.deposit.toFixed(2)}`;
 
       const total = tier.rate + tier.deposit;
-      document.getElementById('summaryTotal').innerText = `$${total.toFixed(2)}`;
+      document.getElementById('summaryTotalEstimated').textContent = `$${total.toFixed(2)}`;
 
-      autoSetReturnDate();
+      calculateDurationDates();
     }
 
-    // Initial Date Setup (Tomorrow 8:00 AM)
-    function initInitialDates() {
-      const tom = new Date();
-      tom.setDate(tom.getDate() + 1);
-      const yr = tom.getFullYear();
-      const mo = String(tom.getMonth() + 1).padStart(2, '0');
-      const da = String(tom.getDate()).padStart(2, '0');
-      document.getElementById('pickupDateTime').value = `${yr}-${mo}-${da}T08:00`;
-      autoSetReturnDate();
+    // Toggle Blocked Dates Demo
+    function toggleBlockedDemo() {
+      if (blockedDates.length > 0) {
+        blockedDates = [];
+      } else {
+        blockedDates = ['2026-11-20', '2026-11-21', '2026-11-22'];
+      }
+      renderCalendar();
     }
 
-    // Booking Submission Handler
-    async function submitBooking() {
-      const submitBtn = document.getElementById('submitBtn');
-      const statusBox = document.getElementById('statusBox');
+    // Form submission
+    function handleBookingSubmit(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmit');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SUBMITTING REQUEST...';
 
-      submitBtn.disabled = true;
-      submitBtn.innerText = 'PROCESSING REQUEST...';
-
-      const tierKey = document.getElementById('periodSelect').value;
-      const tier = TIER_PRICING[tierKey];
-      const trailerId = document.getElementById('trailerSelect').value;
+      const period = document.getElementById('bookingPeriod').value;
+      const tier = PRICING[period];
+      const trailerId = document.getElementById('bookingTrailer').value;
       const trailerName = trailerId === 'trailer-1' ? 'Trailer #1: 6x12 Utility Trailer' : 'Trailer #2: 6x12 Utility Trailer';
 
-      const bookingPayload = {
+      const payload = {
         bookingId: 'LD-' + Math.floor(1000 + Math.random() * 9000),
-        customerName: document.getElementById('custName').value.trim(),
-        phone: document.getElementById('custPhone').value.trim(),
-        email: document.getElementById('custEmail').value.trim(),
-        driverLicense: document.getElementById('custLicense').value.trim(),
+        customerName: document.getElementById('bookingName').value.trim(),
+        phone: document.getElementById('bookingPhone').value.trim(),
+        email: document.getElementById('bookingEmail').value.trim(),
+        driverLicense: document.getElementById('bookingDL').value.trim(),
         trailerId: trailerId,
         trailerName: trailerName,
-        rentalTier: tierKey,
+        rentalTier: period,
         pickupDateTime: document.getElementById('pickupDateTime').value,
         returnDateTime: document.getElementById('returnDateTime').value,
-        intendedUse: document.getElementById('intendedUse').value.trim(),
-        comments: document.getElementById('comments').value.trim(),
+        intendedUse: document.getElementById('bookingUse').value.trim(),
+        comments: document.getElementById('bookingComments').value.trim(),
         rentalFee: tier.rate,
         securityDeposit: tier.deposit,
-        totalHold: tier.rate + tier.deposit,
-        depositStatus: 'Pending',
-        bookingStatus: 'PENDING_APPROVAL'
+        totalHold: tier.rate + tier.deposit
       };
 
-      // 1. Post to Wix Velo Parent Window
+      // Dispatch to Wix Studio Parent Velo Code
       window.parent.postMessage({
         type: 'SUBMIT_WIX_BOOKING',
-        payload: bookingPayload
+        payload: payload
       }, '*');
 
-      // 2. Also send to local Node.js API if testing on localhost
-      try {
-        const res = await fetch('/api/bookings', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(bookingPayload)
-        });
-        const data = await res.json();
-        showStatus(`✔ Booking request submitted successfully! Reference #${bookingPayload.bookingId}. Status: PENDING_APPROVAL by L&D Trailers.`, 'success');
-      } catch (e) {
-        // Fallback for Wix iframe sandbox where localhost fetch might be restricted
-        showStatus(`✔ Booking request submitted! Reference #${bookingPayload.bookingId}. We will review your tow vehicle and approve your rental shortly.`, 'success');
-      }
-
-      submitBtn.disabled = false;
-      submitBtn.innerText = 'SUBMIT BOOKING REQUEST • AUTHORIZE';
+      showAlert(`✔ Request received! Reference #${payload.bookingId}. Status: PENDING_APPROVAL by L&D Trailers.`, 'success');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> SUBMIT BOOKING REQUEST &bull; AUTHORIZE';
     }
 
-    function showStatus(msg, type) {
-      const box = document.getElementById('statusBox');
-      box.className = `status-alert ${type}`;
-      box.innerText = msg;
-      box.style.display = 'block';
+    function showAlert(msg, type) {
+      const box = document.getElementById('alertMsg');
+      box.className = `alert-msg ${type}`;
+      box.textContent = msg;
     }
   </script>
-
 </body>
 </html>
