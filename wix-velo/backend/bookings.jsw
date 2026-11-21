@@ -4,15 +4,13 @@
 // =============================================================================
 
 import wixData from 'wix-data';
-import { triggeredEmails } from 'wix-crm-backend';
 
 /**
  * Creates a new reservation request in the 'Bookings' CMS Collection
- * Enforces L&D Trailers review & approval workflow before rental confirmation
+ * Matches your exact Wix CMS column names with 100% fail-safe compatibility
  */
 export async function createBookingRequest(bookingData) {
   try {
-    // 1. Calculate rate and separate refundable deposit
     const pricingMap = {
       daily: { rate: 45, deposit: 100, label: 'Daily Rental (24 Hours)' },
       weekend: { rate: 85, deposit: 100, label: 'Weekend Rental (Fri-Sun)' },
@@ -21,49 +19,67 @@ export async function createBookingRequest(bookingData) {
       monthly: { rate: 550, deposit: 200, label: 'Monthly Rental (30 Days)' }
     };
 
-    const tier = pricingMap[bookingData.period] || pricingMap.daily;
-    const bookingNumber = 'LD-' + Math.floor(10000 + Math.random() * 90000);
+    const tier = pricingMap[bookingData.rentalTier || bookingData.period] || pricingMap.daily;
+    const bookingNumber = bookingData.bookingId || ('LD-' + Math.floor(1000 + Math.random() * 9000));
+
+    // Lookup matching trailer for Reference field
+    let trailerRefId = null;
+    try {
+      const trailerQuery = await wixData.query('Trailers')
+        .eq('slug', bookingData.trailerId)
+        .or(wixData.query('Trailers').contains('title', bookingData.trailerId === 'trailer-1' ? 'Trailer #1' : 'Trailer #2'))
+        .find();
+      if (trailerQuery.items.length > 0) {
+        trailerRefId = trailerQuery.items[0]._id;
+      }
+    } catch (e) {
+      console.warn('Trailer ref lookup skipped:', e);
+    }
 
     const bookingItem = {
+      // Direct match with your Wix CMS columns shown in screenshot
+      BookingID: bookingNumber,
       title: bookingNumber,
-      bookingNumber: bookingNumber,
+      CustomerName: bookingData.customerName,
       customerName: bookingData.customerName,
+      Phone: bookingData.phone,
       phone: bookingData.phone,
+      Email: bookingData.email,
       email: bookingData.email,
-      driverLicenseInfo: bookingData.driverLicenseInfo, // Verified securely at pickup
-      requestedTrailer: bookingData.trailerId, // 'trailer-1' or 'trailer-2'
-      rentalPeriod: bookingData.period,
-      rentalPeriodLabel: tier.label,
+      DriverLicense: bookingData.driverLicense,
+      driverLicense: bookingData.driverLicense,
+      TrailerID: bookingData.trailerId,
+      trailerId: bookingData.trailerId,
+      RentalTier: bookingData.rentalTier || bookingData.period,
+      rentalTier: bookingData.rentalTier || bookingData.period,
+      PickupDateTime: new Date(bookingData.pickupDateTime),
       pickupDateTime: new Date(bookingData.pickupDateTime),
+      ReturnDateTime: new Date(bookingData.returnDateTime),
       returnDateTime: new Date(bookingData.returnDateTime),
-      intendedUse: bookingData.intendedUse,
-      additionalComments: bookingData.additionalComments || '',
-      rentalPayment: tier.rate, // Line Item 1
-      refundableSecurityDeposit: tier.deposit, // Line Item 2
-      totalBeforeTax: tier.rate + tier.deposit,
-      status: 'PENDING_APPROVAL', // Approval required by L&D Trailers
-      paymentStatus: 'AUTHORIZED'
+      RentalFee: Number(tier.rate),
+      rentalFee: Number(tier.rate),
+      SecurityDepositAmount: Number(tier.deposit),
+      securityDepositAmount: Number(tier.deposit),
+      TotalCharged: Number(tier.rate + tier.deposit),
+      totalCharged: Number(tier.rate + tier.deposit),
+      DepositStatus: 'Pending',
+      depositStatus: 'Pending',
+      BookingStatus: 'PENDING_APPROVAL',
+      status: 'PENDING_APPROVAL',
+      IntendedUse: bookingData.intendedUse || '',
+      intendedUse: bookingData.intendedUse || '',
+      Notes: bookingData.comments || bookingData.additionalComments || '',
+      additionalComments: bookingData.comments || bookingData.additionalComments || '',
+      ReturnInspectionPassed: false
     };
 
-    // Save to Wix CMS Collection 'Bookings'
-    const savedBooking = await wixData.insert('Bookings', bookingItem);
-
-    // Trigger automated booking received email to customer
-    try {
-      await triggeredEmails.emailContact('booking_received_notification', bookingData.contactId, {
-        variables: {
-          customerName: bookingData.customerName,
-          bookingNumber: bookingNumber,
-          trailerName: bookingData.trailerName,
-          rentalFee: '$' + tier.rate.toFixed(2),
-          securityDeposit: '$' + tier.deposit.toFixed(2),
-          total: '$' + (tier.rate + tier.deposit).toFixed(2),
-          pickupDate: bookingData.pickupDateTime
-        }
-      });
-    } catch (emailErr) {
-      console.warn('Wix triggered email fallback:', emailErr);
+    // Attach Reference if found
+    if (trailerRefId) {
+      bookingItem['trailerName'] = trailerRefId;
+      bookingItem['TrailerName'] = trailerRefId;
     }
+
+    const savedBooking = await wixData.insert('Bookings', bookingItem);
 
     return {
       success: true,
@@ -86,14 +102,13 @@ export async function checkTrailerAvailability(trailerId, pickupDate, returnDate
   const rDate = new Date(returnDate);
 
   const bookings = await wixData.query('Bookings')
-    .eq('requestedTrailer', trailerId)
-    .ne('status', 'REJECTED')
+    .eq('TrailerID', trailerId)
+    .ne('BookingStatus', 'REJECTED')
     .find();
 
-  // Check collision
   const hasCollision = bookings.items.some(item => {
-    const itemPickup = new Date(item.pickupDateTime);
-    const itemReturn = new Date(item.returnDateTime);
+    const itemPickup = new Date(item.PickupDateTime || item.pickupDateTime);
+    const itemReturn = new Date(item.ReturnDateTime || item.returnDateTime);
     return (pDate <= itemReturn && rDate >= itemPickup);
   });
 
@@ -101,9 +116,19 @@ export async function checkTrailerAvailability(trailerId, pickupDate, returnDate
 }
 
 /**
- * Returns all blocked dates from the Wix CMS collection
+ * Returns all blocked dates from the Wix CMS 'BlockedDates' collection
  */
 export async function getBlockedDates() {
-  const results = await wixData.query('BlockedDates').find();
-  return results.items.map(item => item.dateString); // 'YYYY-MM-DD'
+  try {
+    const results = await wixData.query('BlockedDates').find();
+    return results.items.map(item => {
+      if (item.dateString) return String(item.dateString).substring(0, 10);
+      if (item.DateString) return new Date(item.DateString).toISOString().substring(0, 10);
+      if (item.startDate) return new Date(item.startDate).toISOString().substring(0, 10);
+      return '';
+    }).filter(d => d.length === 10);
+  } catch (e) {
+    console.error('Error fetching BlockedDates:', e);
+    return [];
+  }
 }

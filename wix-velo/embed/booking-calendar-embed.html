@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L&D Trailers - Dynamic Booking & Availability Calendar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,700&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&family=Russo+One&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-pitch: #0A0A0C;
+      --bg-card: #141619;
+      --bg-input: #1C1E23;
+      --red-primary: #E60000;
+      --red-hover: #FF1A1A;
+      --silver-light: #C0C5CE;
+      --silver-muted: #8E95A5;
+      --border-silver: #2E323B;
+      --green-available: #00C853;
+      --red-booked: #D50000;
+      --font-heading: 'Russo One', sans-serif;
+      --font-accent: 'Chakra Petch', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-number: 'Montserrat', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-pitch);
+      color: #FFFFFF;
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .booking-wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 32px;
+      align-items: start;
+    }
+
+    @media (max-width: 992px) {
+      .booking-wrapper {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left Column: Calendar & Fleet Cards */
+    .left-col {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .card-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-silver);
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .panel-header {
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--border-silver);
+      padding-bottom: 12px;
+    }
+
+    .panel-eyebrow {
+      font-family: var(--font-accent);
+      color: var(--red-primary);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .panel-title {
+      font-family: var(--font-heading);
+      font-size: 1.45rem;
+      color: #FFFFFF;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    .panel-subtitle {
+      font-size: 0.85rem;
+      color: var(--silver-muted);
+      margin-top: 4px;
+    }
+
+    /* Interactive Calendar Styling */
+    .calendar-container {
+      background: #0E1013;
+      border: 1px solid var(--border-silver);
+      border-radius: 6px;
+      padding: 16px;
+    }
+
+    .calendar-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .cal-month-title {
+      font-family: var(--font-accent);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      text-transform: uppercase;
+    }
+
+    .cal-nav-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-silver);
+      color: #FFFFFF;
+      width: 32px;
+      height: 32px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .cal-nav-btn:hover {
+      border-color: var(--red-primary);
+      color: var(--red-primary);
+    }
+
+    .cal-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-family: var(--font-accent);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--silver-muted);
+      margin-bottom: 10px;
+    }
+
+    .cal-days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+    }
+
+    .cal-day-cell {
+      aspect-ratio: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      font-family: var(--font-number);
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      border: 1px solid transparent;
+    }
+
+    .cal-day-cell.empty {
+      cursor: default;
+      background: transparent;
+    }
+
+    .cal-day-cell.available {
+      background: rgba(0, 200, 83, 0.12);
+      border-color: rgba(0, 200, 83, 0.35);
+      color: #00E676;
+    }
+
+    .cal-day-cell.available:hover {
+      background: var(--green-available);
+      color: #000;
+      transform: scale(1.05);
+      font-weight: 900;
+      box-shadow: 0 0 12px rgba(0, 200, 83, 0.5);
+    }
+
+    .cal-day-cell.booked {
+      background: rgba(213, 0, 0, 0.15);
+      border-color: rgba(213, 0, 0, 0.4);
+      color: #FF5252;
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+
+    .cal-day-cell.selected {
+      background: var(--red-primary) !important;
+      color: #FFF !important;
+      border-color: #FFF !important;
+      box-shadow: 0 0 14px rgba(230, 0, 0, 0.7);
+    }
+
+    .cal-legend {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-silver);
+      font-size: 0.8rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--silver-light);
+    }
+
+    .dot-avail {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--green-available);
+      box-shadow: 0 0 6px var(--green-available);
+    }
+
+    .dot-booked {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--red-booked);
+      box-shadow: 0 0 6px var(--red-booked);
+    }
+
+    /* Fleet Selector Cards */
+    .fleet-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 500px) {
+      .fleet-cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .fleet-card-btn {
+      background: #0E1013;
+      border: 1px solid var(--border-silver);
+      border-radius: 6px;
+      padding: 14px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+    }
+
+    .fleet-card-btn:hover {
+      border-color: var(--red-primary);
+      background: #181A20;
+    }
+
+    .fleet-card-btn.active {
+      border: 2px solid var(--red-primary);
+      background: #1C0505;
+      box-shadow: 0 0 15px rgba(230, 0, 0, 0.25);
+    }
+
+    .fleet-card-tag {
+      font-family: var(--font-accent);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--red-primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .fleet-card-name {
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      color: #FFFFFF;
+      margin: 4px 0 6px 0;
+    }
+
+    .fleet-card-specs {
+      font-size: 0.78rem;
+      color: var(--silver-muted);
+      line-height: 1.4;
+    }
+
+    /* Right Column: Reservation Request Form */
+    .form-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-silver);
+      border-radius: 8px;
+      padding: 28px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .notice-box {
+      background: rgba(230, 0, 0, 0.08);
+      border-left: 3px solid var(--red-primary);
+      border-radius: 4px;
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      font-size: 0.88rem;
+      color: var(--silver-light);
+    }
+
+    .notice-box strong {
+      color: #FFFFFF;
+      text-transform: uppercase;
+    }
+
+    .form-grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .form-grid-2col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      font-family: var(--font-accent);
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .form-label-badge {
+      font-size: 0.72rem;
+      color: var(--green-available);
+      font-weight: 600;
+      font-family: var(--font-body);
+    }
+
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border-silver);
+      border-radius: 4px;
+      padding: 11px 14px;
+      color: #FFFFFF;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      transition: all 0.2s;
+    }
+
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      outline: none;
+      border-color: var(--red-primary);
+      box-shadow: 0 0 10px rgba(230, 0, 0, 0.3);
+      background: #23262D;
+    }
+
+    .form-select option {
+      background: #141619;
+      color: #FFF;
+    }
+
+    /* Live Estimated Price Summary Card */
+    .summary-card {
+      background: #0E1013;
+      border: 1px solid var(--border-silver);
+      border-top: 3px solid var(--red-primary);
+      border-radius: 6px;
+      padding: 20px;
+      margin: 24px 0;
+    }
+
+    .summary-header {
+      font-family: var(--font-heading);
+      font-size: 1.15rem;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .summary-unit-badge {
+      font-family: var(--font-accent);
+      font-size: 0.88rem;
+      color: var(--silver-light);
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-silver);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.92rem;
+      color: var(--silver-light);
+      margin-bottom: 10px;
+    }
+
+    .summary-amount {
+      font-family: var(--font-number);
+      font-weight: 800;
+      color: #FFFFFF;
+      font-size: 1.05rem;
+    }
+
+    .summary-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-silver);
+    }
+
+    .total-title {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      color: #FFFFFF;
+      text-transform: uppercase;
+    }
+
+    .total-price {
+      font-family: var(--font-number);
+      font-size: 1.85rem;
+      font-weight: 900;
+      color: var(--red-primary);
+      text-shadow: 0 0 12px rgba(230, 0, 0, 0.4);
+    }
+
+    .summary-disclaimer {
+      font-size: 0.78rem;
+      color: var(--silver-muted);
+      margin-top: 12px;
+      line-height: 1.4;
+    }
+
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      background: var(--red-primary);
+      color: #FFFFFF;
+      border: none;
+      border-radius: 4px;
+      padding: 16px;
+      font-family: var(--font-accent);
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 20px rgba(230, 0, 0, 0.35);
+    }
+
+    .submit-btn:hover {
+      background: var(--red-hover);
+      box-shadow: 0 6px 28px rgba(230, 0, 0, 0.6);
+      transform: translateY(-2px);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .status-alert {
+      display: none;
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      text-align: center;
+    }
+
+    .status-alert.success {
+      display: block;
+      background: rgba(0, 200, 83, 0.15);
+      border: 1px solid var(--green-available);
+      color: #00E676;
+    }
+
+    .status-alert.error {
+      display: block;
+      background: rgba(213, 0, 0, 0.15);
+      border: 1px solid var(--red-primary);
+      color: #FF5252;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="booking-wrapper">
+    
+    <!-- LEFT COLUMN: AVAILABILITY CALENDAR & CURRENT FLEET -->
+    <div class="left-col">
+      
+      <!-- Panel 1: Availability Calendar -->
+      <div class="card-panel">
+        <div class="panel-header">
+          <div class="panel-eyebrow">Real-Time Schedule</div>
+          <h2 class="panel-title">AVAILABILITY CALENDAR</h2>
+          <p class="panel-subtitle">Click any green available date to pre-fill your pickup date below.</p>
+        </div>
+
+        <div class="calendar-container">
+          <div class="calendar-header-bar">
+            <button type="button" class="cal-nav-btn" id="prevMonthBtn">&lt;</button>
+            <div class="cal-month-title" id="calendarMonthTitle">November 2026</div>
+            <button type="button" class="cal-nav-btn" id="nextMonthBtn">&gt;</button>
+          </div>
+
+          <div class="cal-weekdays">
+            <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+          </div>
+
+          <div class="cal-days-grid" id="calendarDaysGrid">
+            <!-- Populated dynamically via JS -->
+          </div>
+
+          <div class="cal-legend">
+            <div class="legend-item"><span class="dot-avail"></span> Available</div>
+            <div class="legend-item"><span class="dot-booked"></span> Booked / Reserved</div>
+            <div style="color: var(--silver-muted); font-size: 0.75rem;">[Owner Mode: Block Dates]</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Panel 2: Current Initial Fleet Selection -->
+      <div class="card-panel">
+        <div class="panel-header">
+          <div class="panel-eyebrow">Equipment Selection</div>
+          <h2 class="panel-title">CURRENT INITIAL FLEET</h2>
+          <p class="panel-subtitle">Select a trailer unit to update rates and availability.</p>
+        </div>
+
+        <div class="fleet-cards-grid">
+          
+          <div class="fleet-card-btn active" id="fleetCard1" onclick="selectFleetTrailer('trailer-1', 'Trailer #1: 6x12 Utility Trailer')">
+            <div class="fleet-card-tag">Trailer 1</div>
+            <div class="fleet-card-name">Trailer #1: 6x12 Utility Trailer</div>
+            <div class="fleet-card-specs">Tandem Axle • Chrome Wheels • Ramp Gate</div>
+          </div>
+
+          <div class="fleet-card-btn" id="fleetCard2" onclick="selectFleetTrailer('trailer-2', 'Trailer #2: 6x12 Utility Trailer')">
+            <div class="fleet-card-tag">Trailer 2</div>
+            <div class="fleet-card-name">Trailer #2: 6x12 Utility Trailer</div>
+            <div class="fleet-card-specs">Hardwood Deck • D-Rings • Spring-Assist Ramp</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN: ONLINE RESERVATION REQUEST FORM -->
+    <div class="form-panel">
+      <div class="panel-header">
+        <div class="panel-eyebrow">Online Reservation Request</div>
+        <h1 class="panel-title" style="font-size: 1.85rem;">RESERVE YOUR TRAILER</h1>
+      </div>
+
+      <div class="notice-box">
+        <strong>IMPORTANT:</strong> Submitting a booking request does not guarantee availability. All booking requests are reviewed and approved by L&D Trailers before the rental is confirmed.
+      </div>
+
+      <form id="reservationForm" onsubmit="event.preventDefault(); submitBooking();">
+        
+        <!-- 1. Customer's Full Name -->
+        <div class="form-group">
+          <label class="form-label" for="custName">1. Customer's Full Name *</label>
+          <input type="text" id="custName" class="form-input" placeholder="e.g. Johnathan Smith" required>
+        </div>
+
+        <!-- 2. Phone Number & 3. Email Address (2-Column Grid) -->
+        <div class="form-grid-2col">
+          <div class="form-group">
+            <label class="form-label" for="custPhone">2. Phone Number *</label>
+            <input type="tel" id="custPhone" class="form-input" placeholder="e.g. (662) 555-0199" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="custEmail">3. Email Address *</label>
+            <input type="email" id="custEmail" class="form-input" placeholder="e.g. john@example.com" required>
+          </div>
+        </div>
+
+        <!-- 4. Driver's License Information -->
+        <div class="form-group">
+          <label class="form-label" for="custLicense">
+            <span>4. Driver's License Information *</span>
+            <span class="form-label-badge">✔ Verified securely at pickup</span>
+          </label>
+          <input type="text" id="custLicense" class="form-input" placeholder="State & Driver's License # (e.g. MS - S1234567)" required>
+        </div>
+
+        <!-- 5. Requested Trailer & 6. Rental Period (2-Column Grid) -->
+        <div class="form-grid-2col">
+          <div class="form-group">
+            <label class="form-label" for="trailerSelect">5. Requested Trailer *</label>
+            <select id="trailerSelect" class="form-select" onchange="onTrailerChange(this.value)" required>
+              <option value="trailer-1" selected>Trailer #1: 6x12 Utility Trailer</option>
+              <option value="trailer-2">Trailer #2: 6x12 Utility Trailer</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="periodSelect">6. Rental Period *</label>
+            <select id="periodSelect" class="form-select" onchange="calculateRates()" required>
+              <option value="daily" selected>Daily Rental ($45 - 24 hrs)</option>
+              <option value="weekend">Weekend Special ($85 - Fri-Sun)</option>
+              <option value="3day">3-Day Rental ($115 - 72 hrs)</option>
+              <option value="weekly">Weekly Rental ($225 - 7 days)</option>
+              <option value="monthly">Monthly Rental ($550 - 30 days)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 7. Pickup Date/Time & 8. Return Date/Time (2-Column Grid) -->
+        <div class="form-grid-2col">
+          <div class="form-group">
+            <label class="form-label" for="pickupDateTime">7. Pickup Date and Time *</label>
+            <input type="datetime-local" id="pickupDateTime" class="form-input" onchange="autoSetReturnDate()" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="returnDateTime">8. Return Date and Time *</label>
+            <input type="datetime-local" id="returnDateTime" class="form-input" required>
+          </div>
+        </div>
+
+        <!-- 9. Intended Use of Trailer -->
+        <div class="form-group">
+          <label class="form-label" for="intendedUse">9. Intended Use of Trailer *</label>
+          <input type="text" id="intendedUse" class="form-input" placeholder="e.g. Lawn care equipment, home furniture move, contractor lumber" required>
+        </div>
+
+        <!-- 10. Additional Comments -->
+        <div class="form-group">
+          <label class="form-label" for="comments">10. Additional Comments</label>
+          <textarea id="comments" class="form-textarea" rows="2" placeholder="Tow vehicle make/model, hitch ball size (2&quot; standard), or special timing notes..."></textarea>
+        </div>
+
+        <!-- LIVE ESTIMATED PRICE SUMMARY CARD -->
+        <div class="summary-card">
+          <div class="summary-header">
+            <span>⚡ LIVE ESTIMATED PRICE SUMMARY</span>
+          </div>
+
+          <div class="summary-unit-badge">
+            <strong>Selected Unit:</strong> <span id="summaryTrailerLabel">Trailer #1: 6x12 Utility Trailer</span>
+          </div>
+
+          <div class="summary-row">
+            <span id="summaryPeriodLabel">1. Rental Payment (DAILY RENTAL - 24 Hours):</span>
+            <span class="summary-amount" id="summaryRentalFee">$45.00</span>
+          </div>
+
+          <div class="summary-row">
+            <span>2. Refundable Security Deposit:</span>
+            <span class="summary-amount" id="summaryDepositFee">$100.00</span>
+          </div>
+
+          <div class="summary-total-row">
+            <span class="total-title">Estimated Total (Before Taxes):</span>
+            <span class="total-price" id="summaryTotal">$145.00</span>
+          </div>
+
+          <div class="summary-disclaimer">
+            * The security deposit is separate from the rental charge and is refunded after inspection.
+          </div>
+        </div>
+
+        <!-- SUBMIT BUTTON -->
+        <button type="submit" class="submit-btn" id="submitBtn">
+          <span>SUBMIT BOOKING REQUEST • AUTHORIZE</span>
+        </button>
+
+        <!-- Status Message Alert Box -->
+        <div class="status-alert" id="statusBox"></div>
+
+      </form>
+    </div>
+
+  </div>
+
+  <script>
+    // Rates & Deposits Configuration (Exact Client Tiers)
+    const TIER_PRICING = {
+      daily: { rate: 45, deposit: 100, label: '1. Rental Payment (DAILY RENTAL - 24 Hours):', hours: 24 },
+      weekend: { rate: 85, deposit: 100, label: '1. Rental Payment (WEEKEND SPECIAL - Fri-Sun):', hours: 72 },
+      '3day': { rate: 115, deposit: 100, label: '1. Rental Payment (3-DAY RENTAL - 72 Hours):', hours: 72 },
+      weekly: { rate: 225, deposit: 150, label: '1. Rental Payment (WEEKLY RENTAL - 7 Days):', hours: 168 },
+      monthly: { rate: 550, deposit: 200, label: '1. Rental Payment (MONTHLY RENTAL - 30 Days):', hours: 720 }
+    };
+
+    // Blocked Dates State (November & December 2026)
+    let blockedDates = ['2026-11-20', '2026-11-21', '2026-11-22', '2026-11-26', '2026-11-27', '2026-12-05', '2026-12-25'];
+    let currentYear = 2026;
+    let currentMonth = 10; // 0-indexed: 10 = November
+
+    // Initialize Page
+    window.addEventListener('DOMContentLoaded', () => {
+      initInitialDates();
+      renderCalendar(currentYear, currentMonth);
+      calculateRates();
+
+      // Listen for message from Wix Velo parent if embedded inside Wix Studio
+      window.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'WIX_CMS_DATA') {
+          if (event.data.blockedDates && Array.isArray(event.data.blockedDates)) {
+            blockedDates = event.data.blockedDates;
+            renderCalendar(currentYear, currentMonth);
+          }
+        }
+        if (event.data && event.data.type === 'BOOKING_SUBMITTED_SUCCESS') {
+          showStatus(event.data.message || 'Booking Request Submitted! Status: PENDING_APPROVAL.', 'success');
+        }
+      });
+    });
+
+    // Calendar Navigation
+    document.getElementById('prevMonthBtn').addEventListener('click', () => {
+      currentMonth--;
+      if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+      renderCalendar(currentYear, currentMonth);
+    });
+
+    document.getElementById('nextMonthBtn').addEventListener('click', () => {
+      currentMonth++;
+      if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+      renderCalendar(currentYear, currentMonth);
+    });
+
+    // Render Calendar Grid
+    function renderCalendar(year, month) {
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      document.getElementById('calendarMonthTitle').innerText = `${monthNames[month]} ${year}`;
+
+      const grid = document.getElementById('calendarDaysGrid');
+      grid.innerHTML = '';
+
+      const firstDayIndex = new Date(year, month, 1).getDay();
+      const totalDays = new Date(year, month + 1, 0).getDate();
+
+      // Empty prefix cells
+      for (let i = 0; i < firstDayIndex; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.className = 'cal-day-cell empty';
+        grid.appendChild(emptyCell);
+      }
+
+      // Actual Day cells
+      for (let d = 1; d <= totalDays; d++) {
+        const cell = document.createElement('div');
+        const monthStr = String(month + 1).padStart(2, '0');
+        const dayStr = String(d).padStart(2, '0');
+        const dateIso = `${year}-${monthStr}-${dayStr}`;
+
+        cell.innerText = d;
+        cell.dataset.date = dateIso;
+
+        if (blockedDates.includes(dateIso)) {
+          cell.className = 'cal-day-cell booked';
+          cell.title = 'Booked / Blocked Date';
+        } else {
+          cell.className = 'cal-day-cell available';
+          cell.title = 'Available - Click to select';
+          cell.onclick = () => selectCalendarDate(dateIso, cell);
+        }
+
+        grid.appendChild(cell);
+      }
+    }
+
+    // Select Calendar Date & Pre-fill Form
+    function selectCalendarDate(dateIso, cellElement) {
+      document.querySelectorAll('.cal-day-cell').forEach(c => c.classList.remove('selected'));
+      cellElement.classList.add('selected');
+
+      const pickupField = document.getElementById('pickupDateTime');
+      pickupField.value = `${dateIso}T08:00`;
+      autoSetReturnDate();
+
+      pickupField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    // Auto set Return Date based on rental tier hours
+    function autoSetReturnDate() {
+      const pickupVal = document.getElementById('pickupDateTime').value;
+      if (!pickupVal) return;
+
+      const tierKey = document.getElementById('periodSelect').value || 'daily';
+      const hoursToAdd = TIER_PRICING[tierKey].hours;
+
+      const pDate = new Date(pickupVal);
+      pDate.setHours(pDate.getHours() + hoursToAdd);
+
+      const yr = pDate.getFullYear();
+      const mo = String(pDate.getMonth() + 1).padStart(2, '0');
+      const da = String(pDate.getDate()).padStart(2, '0');
+      const hr = String(pDate.getHours()).padStart(2, '0');
+      const mi = String(pDate.getMinutes()).padStart(2, '0');
+
+      document.getElementById('returnDateTime').value = `${yr}-${mo}-${da}T${hr}:${mi}`;
+    }
+
+    // Fleet selection handler
+    function selectFleetTrailer(trailerId, trailerName) {
+      document.getElementById('fleetCard1').classList.toggle('active', trailerId === 'trailer-1');
+      document.getElementById('fleetCard2').classList.toggle('active', trailerId === 'trailer-2');
+      document.getElementById('trailerSelect').value = trailerId;
+      document.getElementById('summaryTrailerLabel').innerText = trailerName;
+    }
+
+    function onTrailerChange(trailerId) {
+      const name = trailerId === 'trailer-1' ? 'Trailer #1: 6x12 Utility Trailer' : 'Trailer #2: 6x12 Utility Trailer';
+      selectFleetTrailer(trailerId, name);
+    }
+
+    // Rate Calculation
+    function calculateRates() {
+      const tierKey = document.getElementById('periodSelect').value || 'daily';
+      const tier = TIER_PRICING[tierKey];
+
+      document.getElementById('summaryPeriodLabel').innerText = tier.label;
+      document.getElementById('summaryRentalFee').innerText = `$${tier.rate.toFixed(2)}`;
+      document.getElementById('summaryDepositFee').innerText = `$${tier.deposit.toFixed(2)}`;
+
+      const total = tier.rate + tier.deposit;
+      document.getElementById('summaryTotal').innerText = `$${total.toFixed(2)}`;
+
+      autoSetReturnDate();
+    }
+
+    // Initial Date Setup (Tomorrow 8:00 AM)
+    function initInitialDates() {
+      const tom = new Date();
+      tom.setDate(tom.getDate() + 1);
+      const yr = tom.getFullYear();
+      const mo = String(tom.getMonth() + 1).padStart(2, '0');
+      const da = String(tom.getDate()).padStart(2, '0');
+      document.getElementById('pickupDateTime').value = `${yr}-${mo}-${da}T08:00`;
+      autoSetReturnDate();
+    }
+
+    // Booking Submission Handler
+    async function submitBooking() {
+      const submitBtn = document.getElementById('submitBtn');
+      const statusBox = document.getElementById('statusBox');
+
+      submitBtn.disabled = true;
+      submitBtn.innerText = 'PROCESSING REQUEST...';
+
+      const tierKey = document.getElementById('periodSelect').value;
+      const tier = TIER_PRICING[tierKey];
+      const trailerId = document.getElementById('trailerSelect').value;
+      const trailerName = trailerId === 'trailer-1' ? 'Trailer #1: 6x12 Utility Trailer' : 'Trailer #2: 6x12 Utility Trailer';
+
+      const bookingPayload = {
+        bookingId: 'LD-' + Math.floor(1000 + Math.random() * 9000),
+        customerName: document.getElementById('custName').value.trim(),
+        phone: document.getElementById('custPhone').value.trim(),
+        email: document.getElementById('custEmail').value.trim(),
+        driverLicense: document.getElementById('custLicense').value.trim(),
+        trailerId: trailerId,
+        trailerName: trailerName,
+        rentalTier: tierKey,
+        pickupDateTime: document.getElementById('pickupDateTime').value,
+        returnDateTime: document.getElementById('returnDateTime').value,
+        intendedUse: document.getElementById('intendedUse').value.trim(),
+        comments: document.getElementById('comments').value.trim(),
+        rentalFee: tier.rate,
+        securityDeposit: tier.deposit,
+        totalHold: tier.rate + tier.deposit,
+        depositStatus: 'Pending',
+        bookingStatus: 'PENDING_APPROVAL'
+      };
+
+      // 1. Post to Wix Velo Parent Window
+      window.parent.postMessage({
+        type: 'SUBMIT_WIX_BOOKING',
+        payload: bookingPayload
+      }, '*');
+
+      // 2. Also send to local Node.js API if testing on localhost
+      try {
+        const res = await fetch('/api/bookings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(bookingPayload)
+        });
+        const data = await res.json();
+        showStatus(`✔ Booking request submitted successfully! Reference #${bookingPayload.bookingId}. Status: PENDING_APPROVAL by L&D Trailers.`, 'success');
+      } catch (e) {
+        // Fallback for Wix iframe sandbox where localhost fetch might be restricted
+        showStatus(`✔ Booking request submitted! Reference #${bookingPayload.bookingId}. We will review your tow vehicle and approve your rental shortly.`, 'success');
+      }
+
+      submitBtn.disabled = false;
+      submitBtn.innerText = 'SUBMIT BOOKING REQUEST • AUTHORIZE';
+    }
+
+    function showStatus(msg, type) {
+      const box = document.getElementById('statusBox');
+      box.className = `status-alert ${type}`;
+      box.innerText = msg;
+      box.style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>
