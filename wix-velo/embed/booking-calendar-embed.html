@@ -2,13 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>L&D Trailers - Availability Calendar & Reservation Request</title>
+  
+  <!-- Fonts: Russo One, Chakra Petch, Inter, Montserrat -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,700&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&family=Russo+One&display=swap" rel="stylesheet">
+  <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
   <style>
+    /* CSS RESET & VARIABLES */
     :root {
       --bg-pitch: #0A0A0C;
       --bg-card: #141619;
@@ -22,56 +27,172 @@
       --silver-dark: #8E95A5;
       --text-muted: #6B7280;
       --text-white: #FFFFFF;
+      --green-available: #2ECC71;
       --font-heading: 'Russo One', sans-serif;
       --font-subheading: 'Chakra Petch', sans-serif;
       --font-body: 'Inter', sans-serif;
       --font-price: 'Montserrat', sans-serif;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
+    /* Zero Margin & Zero Padding Root for Clean Iframe Embed */
+    html, body {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
       background-color: var(--bg-pitch);
-      color: #FFFFFF;
+      color: var(--text-white);
       font-family: var(--font-body);
       font-size: 15px;
-      line-height: 1.6;
-      padding: 20px;
+      line-height: 1.5;
+      box-sizing: border-box;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    *, *::before, *::after {
+      box-sizing: inherit;
+      margin: 0;
+      padding: 0;
     }
 
     .text-red {
       color: var(--red-primary) !important;
     }
 
-    .booking-layout-grid {
-      max-width: 1250px;
+    /* ROOT WRAPPER (100% Width Responsive) */
+    .booking-embed-root {
+      width: 100%;
+      max-width: 100%;
+      padding: 12px;
+      box-sizing: border-box;
       margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1.05fr 1fr;
-      gap: 2.5rem;
-      align-items: flex-start;
     }
 
-    @media (max-width: 992px) {
+    /* 2-COLUMN MAIN LAYOUT GRID */
+    .booking-layout-grid {
+      width: 100%;
+      max-width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1.05fr;
+      gap: 20px;
+      align-items: flex-start;
+      box-sizing: border-box;
+    }
+
+    /* --------------------------------------------------------------------------
+       BREAKPOINT 1: LARGE DESKTOP & 4K (min-width: 1441px)
+       -------------------------------------------------------------------------- */
+    @media (min-width: 1441px) {
+      .booking-embed-root {
+        max-width: 1600px;
+        padding: 24px;
+      }
       .booking-layout-grid {
-        grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 32px;
+      }
+      .calendar-card, .booking-form-card, .industrial-card {
+        padding: 2.2rem !important;
       }
     }
 
     /* --------------------------------------------------------------------------
-       LEFT: REAL-TIME AVAILABILITY CALENDAR
+       BREAKPOINT 2: STANDARD LAPTOP / DESKTOP (1200px - 1440px)
        -------------------------------------------------------------------------- */
+    @media (max-width: 1440px) and (min-width: 1200px) {
+      .booking-embed-root {
+        padding: 18px;
+      }
+      .booking-layout-grid {
+        gap: 24px;
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       BREAKPOINT 3: SMALL LAPTOP / TABLET LANDSCAPE (992px - 1199px)
+       -------------------------------------------------------------------------- */
+    @media (max-width: 1199px) and (min-width: 992px) {
+      .booking-embed-root {
+        padding: 12px;
+      }
+      .booking-layout-grid {
+        gap: 18px;
+        grid-template-columns: 1fr 1fr;
+      }
+      .calendar-card, .booking-form-card {
+        padding: 1.5rem !important;
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       BREAKPOINT 4: TABLET PORTRAIT (768px - 991px)
+       -------------------------------------------------------------------------- */
+    @media (max-width: 991px) and (min-width: 768px) {
+      .booking-layout-grid {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+      }
+      .booking-embed-root {
+        padding: 16px;
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       BREAKPOINT 5: MOBILE SMARTPHONE (320px - 767px)
+       -------------------------------------------------------------------------- */
+    @media (max-width: 767px) {
+      .booking-embed-root {
+        padding: 8px !important;
+      }
+      .booking-layout-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
+      .form-row-2 {
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
+      }
+      .calendar-card, .booking-form-card, .industrial-card {
+        padding: 1.25rem 1rem !important;
+      }
+      .booking-form-card h2 {
+        font-size: 1.45rem !important;
+      }
+      .calendar-header h2 {
+        font-size: 1.1rem !important;
+      }
+      .calendar-cell {
+        font-size: 0.8rem !important;
+      }
+      .calendar-legend-bar {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+      }
+      .price-breakdown-box {
+        padding: 1rem !important;
+      }
+      .price-line-item.total-line .price-val {
+        font-size: 1.35rem !important;
+      }
+    }
+
+    /* LEFT COLUMN: CALENDAR & FLEET */
+    .left-col-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+    }
+
+    /* Calendar Card */
     .calendar-card {
       background: var(--bg-card);
       border: 1px solid var(--border-silver);
       border-radius: 8px;
-      padding: 2rem;
-      margin-bottom: 2rem;
+      padding: 1.8rem;
+      width: 100%;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
 
     .calendar-header {
@@ -79,11 +200,13 @@
       align-items: center;
       justify-content: space-between;
       margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .calendar-header h2 {
       font-family: var(--font-heading);
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       color: #FFFFFF;
       margin-bottom: 0.2rem;
       text-transform: uppercase;
@@ -126,16 +249,17 @@
       font-family: var(--font-heading);
       font-weight: 700;
       color: #FFFFFF;
-      min-width: 140px;
+      min-width: 130px;
       text-align: center;
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
 
     .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 0.4rem;
+      gap: 0.35rem;
       text-align: center;
+      width: 100%;
     }
 
     .calendar-day-header {
@@ -143,7 +267,7 @@
       font-size: 0.78rem;
       font-weight: 700;
       color: var(--text-muted);
-      padding: 0.4rem 0;
+      padding: 0.3rem 0;
     }
 
     .calendar-cell {
@@ -167,6 +291,7 @@
       color: #FFF;
     }
 
+    /* Selected Date (Solid Red Highlight) */
     .calendar-cell.selected {
       background: var(--red-primary) !important;
       color: #FFF !important;
@@ -216,13 +341,14 @@
       background: var(--bg-card);
       border: 1px solid var(--border-silver);
       border-radius: 8px;
-      padding: 1.8rem;
+      padding: 1.5rem;
+      width: 100%;
     }
 
     .industrial-card h3 {
       font-family: var(--font-heading);
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
+      font-size: 1.15rem;
+      margin-bottom: 0.9rem;
       text-transform: uppercase;
       color: #FFFFFF;
     }
@@ -237,6 +363,11 @@
       border: 1px solid transparent;
       cursor: pointer;
       transition: all 0.2s;
+      margin-bottom: 0.75rem;
+    }
+
+    .fleet-item-row:last-child {
+      margin-bottom: 0;
     }
 
     .fleet-item-row:hover {
@@ -257,14 +388,16 @@
     }
 
     /* --------------------------------------------------------------------------
-       RIGHT: 10-FIELD ONLINE RESERVATION REQUEST FORM
+       RIGHT: RESERVATION REQUEST FORM
        -------------------------------------------------------------------------- */
     .booking-form-card {
       background: var(--bg-card);
       border: 1px solid var(--border-silver);
-      padding: 2.5rem 2.2rem;
+      padding: 2.2rem;
       border-radius: 8px;
       position: relative;
+      width: 100%;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
 
     .section-eyebrow {
@@ -299,16 +432,16 @@
     .approval-alert-box {
       background: rgba(230, 0, 0, 0.1);
       border: 1px solid var(--red-primary);
-      padding: 1.25rem 1.4rem;
+      padding: 1.1rem 1.3rem;
       border-radius: 4px;
       display: flex;
       align-items: flex-start;
-      gap: 1rem;
-      margin-bottom: 1.8rem;
+      gap: 0.85rem;
+      margin-bottom: 1.6rem;
     }
 
     .approval-alert-icon {
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       color: var(--red-primary);
       flex-shrink: 0;
       margin-top: 2px;
@@ -326,19 +459,15 @@
     }
 
     .form-group {
-      margin-bottom: 1.35rem;
+      margin-bottom: 1.25rem;
+      width: 100%;
     }
 
     .form-row-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
-    }
-
-    @media (max-width: 600px) {
-      .form-row-2 {
-        grid-template-columns: 1fr;
-      }
+      gap: 1.15rem;
+      width: 100%;
     }
 
     .form-label {
@@ -346,11 +475,11 @@
       align-items: center;
       justify-content: space-between;
       font-family: var(--font-heading);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 700;
       color: #FFFFFF;
       text-transform: uppercase;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.45rem;
     }
 
     .form-helper-badge {
@@ -368,7 +497,7 @@
       background: var(--bg-input);
       border: 1px solid var(--border-silver);
       border-radius: 4px;
-      padding: 0.9rem 1.1rem;
+      padding: 0.85rem 1rem;
       color: #FFFFFF;
       font-family: var(--font-body);
       font-size: 0.95rem;
@@ -394,19 +523,20 @@
       background: #0B0D10;
       border: 1px solid var(--border-silver);
       border-radius: 4px;
-      padding: 1.4rem;
-      margin: 1.8rem 0;
+      padding: 1.25rem;
+      margin: 1.6rem 0;
+      width: 100%;
     }
 
     .price-breakdown-title {
       font-family: var(--font-heading);
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 700;
       color: var(--silver-light);
       text-transform: uppercase;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding-bottom: 0.6rem;
-      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.9rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -418,7 +548,7 @@
       align-items: center;
       font-size: 0.92rem;
       color: var(--silver-light);
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.55rem;
     }
 
     .price-line-item strong {
@@ -429,16 +559,16 @@
 
     .price-line-item.total-line {
       border-top: 1px solid var(--border-silver);
-      padding-top: 0.9rem;
-      margin-top: 0.9rem;
+      padding-top: 0.85rem;
+      margin-top: 0.85rem;
       font-family: var(--font-heading);
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       color: #FFFFFF;
     }
 
     .price-line-item.total-line .price-val {
       font-family: var(--font-price);
-      font-size: 1.6rem;
+      font-size: 1.55rem;
       font-weight: 900;
       color: var(--red-primary);
     }
@@ -448,9 +578,9 @@
       background: var(--red-primary);
       color: #FFFFFF;
       border: none;
-      padding: 1.2rem;
+      padding: 1.15rem;
       font-family: var(--font-heading);
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -493,190 +623,192 @@
 </head>
 <body>
 
-  <div class="booking-layout-grid">
+  <!-- ROOT WRAPPER (100% Full Width Responsive) -->
+  <div class="booking-embed-root">
     
-    <!-- LEFT: REAL-TIME AVAILABILITY CALENDAR & FLEET PREVIEW -->
-    <div>
-      <div class="calendar-card">
-        <div class="calendar-header">
+    <div class="booking-layout-grid">
+      
+      <!-- LEFT: REAL-TIME AVAILABILITY CALENDAR & FLEET PREVIEW -->
+      <div class="left-col-stack">
+        <div class="calendar-card">
+          <div class="calendar-header">
+            <div>
+              <h2><i class="fa-regular fa-calendar-days text-red"></i> AVAILABILITY CALENDAR</h2>
+              <p>Click any green available date to pre-fill your pickup date below.</p>
+            </div>
+            <div class="cal-controls">
+              <button type="button" class="cal-btn" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+              <span id="calendarMonthLabel">November 2026</span>
+              <button type="button" class="cal-btn" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+          </div>
+
+          <div class="calendar-grid" id="calendarDaysGrid">
+            <!-- Populated dynamically via JavaScript -->
+          </div>
+
+          <div class="calendar-legend-bar">
+            <div class="legend-dots">
+              <span><i class="fa-solid fa-circle" style="color: #2ECC71; font-size: 0.65rem;"></i> Available</span>
+              <span><i class="fa-solid fa-circle text-red" style="font-size: 0.65rem;"></i> Booked / Reserved</span>
+            </div>
+            <button type="button" class="btn-link-demo" onclick="toggleBlockedDemo()">
+              [Owner Mode: Block Dates]
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Fleet Card Summary -->
+        <div class="industrial-card">
+          <h3>CURRENT INITIAL FLEET</h3>
           <div>
-            <h2><i class="fa-regular fa-calendar-days text-red"></i> AVAILABILITY CALENDAR</h2>
-            <p>Click any green available date to pre-fill your pickup date below.</p>
-          </div>
-          <div class="cal-controls">
-            <button type="button" class="cal-btn" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-            <span id="calendarMonthLabel">November 2026</span>
-            <button type="button" class="cal-btn" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
-          </div>
-        </div>
+            <div class="fleet-item-row active" id="fleetRow1" onclick="selectFleetTrailer('trailer-1', 'Trailer #1: 6x12 Utility Trailer')">
+              <img src="https://raw.githubusercontent.com/ahmedraza069/dontayviouss---code/main/assets/trailer-1.jpg" alt="Trailer 1" class="fleet-thumb">
+              <div>
+                <strong style="color: #FFF; font-size: 0.95rem;">Trailer #1: 6x12 Utility Trailer</strong>
+                <div style="font-size: 0.8rem; color: var(--silver-dark);">Tandem Axle &bull; Chrome Wheels &bull; Ramp Gate</div>
+              </div>
+            </div>
 
-        <div class="calendar-grid" id="calendarDaysGrid">
-          <!-- Populated by JavaScript -->
-        </div>
-
-        <div class="calendar-legend-bar">
-          <div class="legend-dots">
-            <span><i class="fa-solid fa-circle" style="color: #2ECC71; font-size: 0.65rem;"></i> Available</span>
-            <span><i class="fa-solid fa-circle text-red" style="font-size: 0.65rem;"></i> Booked / Reserved</span>
+            <div class="fleet-item-row" id="fleetRow2" onclick="selectFleetTrailer('trailer-2', 'Trailer #2: 6x12 Utility Trailer')">
+              <img src="https://raw.githubusercontent.com/ahmedraza069/dontayviouss---code/main/assets/trailer-wood-deck.jpg" alt="Trailer 2" class="fleet-thumb">
+              <div>
+                <strong style="color: #FFF; font-size: 0.95rem;">Trailer #2: 6x12 Utility Trailer</strong>
+                <div style="font-size: 0.8rem; color: var(--silver-dark);">Hardwood Deck &bull; D-Rings &bull; Spring-Assist Ramp</div>
+              </div>
+            </div>
           </div>
-          <button type="button" class="btn-link-demo" onclick="toggleBlockedDemo()">
-            [Owner Mode: Block Dates]
-          </button>
         </div>
       </div>
 
-      <!-- Quick Fleet Card Summary -->
-      <div class="industrial-card">
-        <h3>CURRENT INITIAL FLEET</h3>
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
-          
-          <div class="fleet-item-row active" id="fleetRow1" onclick="selectFleetTrailer('trailer-1', 'Trailer #1: 6x12 Utility Trailer')">
-            <img src="https://raw.githubusercontent.com/ahmedraza069/dontayviouss---code/main/assets/trailer-1.jpg" alt="Trailer 1" class="fleet-thumb">
-            <div>
-              <strong style="color: #FFF; font-size: 0.95rem;">Trailer #1: 6x12 Utility Trailer</strong>
-              <div style="font-size: 0.8rem; color: var(--silver-dark);">Tandem Axle &bull; Chrome Wheels &bull; Ramp Gate</div>
+      <!-- RIGHT: 10-FIELD RESERVATION REQUEST FORM -->
+      <div>
+        <div class="booking-form-card">
+          <div class="section-eyebrow">ONLINE RESERVATION REQUEST</div>
+          <h2>RESERVE YOUR TRAILER</h2>
+
+          <div class="approval-alert-box">
+            <i class="fa-solid fa-triangle-exclamation approval-alert-icon"></i>
+            <div class="approval-alert-text">
+              <strong>IMPORTANT:</strong> Submitting a booking request does not guarantee availability. All booking requests are reviewed and approved by L&amp;D Trailers before the rental is confirmed.
             </div>
           </div>
 
-          <div class="fleet-item-row" id="fleetRow2" onclick="selectFleetTrailer('trailer-2', 'Trailer #2: 6x12 Utility Trailer')">
-            <img src="https://raw.githubusercontent.com/ahmedraza069/dontayviouss---code/main/assets/trailer-wood-deck.jpg" alt="Trailer 2" class="fleet-thumb">
-            <div>
-              <strong style="color: #FFF; font-size: 0.95rem;">Trailer #2: 6x12 Utility Trailer</strong>
-              <div style="font-size: 0.8rem; color: var(--silver-dark);">Hardwood Deck &bull; D-Rings &bull; Spring-Assist Ramp</div>
+          <form id="onlineBookingForm" onsubmit="handleBookingSubmit(event)">
+            
+            <!-- Field 1: Customer's Full Name -->
+            <div class="form-group">
+              <label class="form-label" for="bookingName">1. Customer's Full Name *</label>
+              <input type="text" id="bookingName" class="form-input" placeholder="e.g. Johnathan Smith" required>
             </div>
-          </div>
 
+            <!-- Field 2 & 3: Phone Number & Email Address (2-Column Grid) -->
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="bookingPhone">2. Phone Number *</label>
+                <input type="tel" id="bookingPhone" class="form-input" placeholder="e.g. (662) 555-0199" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="bookingEmail">3. Email Address *</label>
+                <input type="email" id="bookingEmail" class="form-input" placeholder="e.g. john@example.com" required>
+              </div>
+            </div>
+
+            <!-- Field 4: Driver's License Info -->
+            <div class="form-group">
+              <label class="form-label" for="bookingDL">
+                <span>4. Driver's License Information *</span>
+                <span class="form-helper-badge"><i class="fa-solid fa-shield-check"></i> Verified securely at pickup</span>
+              </label>
+              <input type="text" id="bookingDL" class="form-input" placeholder="State &amp; Driver's License # (e.g. MS - S1234567)" required>
+            </div>
+
+            <!-- Field 5 & 6: Requested Trailer & Rental Period (2-Column Grid) -->
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="bookingTrailer">5. Requested Trailer *</label>
+                <select id="bookingTrailer" class="form-select" onchange="onTrailerSelectChange(this.value)" required>
+                  <option value="trailer-1" selected>Trailer #1: 6x12 Utility Trailer</option>
+                  <option value="trailer-2">Trailer #2: 6x12 Utility Trailer</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="bookingPeriod">6. Rental Period *</label>
+                <select id="bookingPeriod" class="form-select" onchange="updateLivePricing()" required>
+                  <option value="daily" selected>Daily Rental ($45 - 24 hrs)</option>
+                  <option value="weekend">Weekend Special ($85 - Fri-Sun)</option>
+                  <option value="3day">3-Day Rental ($115 - 72 hrs)</option>
+                  <option value="weekly">Weekly Rental ($225 - 7 days)</option>
+                  <option value="monthly">Monthly Rental ($550 - 30 days)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Field 7 & 8: Pickup Date/Time & Return Date/Time (2-Column Grid) -->
+            <div class="form-row-2">
+              <div class="form-group">
+                <label class="form-label" for="pickupDateTime">7. Pickup Date and Time *</label>
+                <input type="datetime-local" id="pickupDateTime" class="form-input" required onchange="calculateDurationDates()">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="returnDateTime">8. Return Date and Time *</label>
+                <input type="datetime-local" id="returnDateTime" class="form-input" required>
+              </div>
+            </div>
+
+            <!-- Field 9: Intended Use -->
+            <div class="form-group">
+              <label class="form-label" for="bookingUse">9. Intended Use of Trailer *</label>
+              <input type="text" id="bookingUse" class="form-input" placeholder="e.g. Lawn care equipment, home furniture move, contractor lumber" required>
+            </div>
+
+            <!-- Field 10: Additional Comments -->
+            <div class="form-group">
+              <label class="form-label" for="bookingComments">10. Additional Comments</label>
+              <textarea id="bookingComments" class="form-textarea" rows="3" placeholder="Tow vehicle make/model, hitch ball size (2&quot; standard), or special timing notes..."></textarea>
+            </div>
+
+            <!-- Live Price Breakdown Summary Box (Separate Line Items) -->
+            <div class="price-breakdown-box">
+              <div class="price-breakdown-title">
+                <i class="fa-solid fa-calculator text-red"></i> LIVE ESTIMATED PRICE SUMMARY
+              </div>
+              <div class="price-line-item">
+                <span>Selected Unit:</span>
+                <strong id="summaryTrailerName">Trailer #1: 6x12 Utility Trailer</strong>
+              </div>
+              <div class="price-line-item">
+                <span>1. Rental Payment (<span id="summaryPeriodLabel">Daily - 24 hrs</span>):</span>
+                <strong id="summaryRentalFee">$45.00</strong>
+              </div>
+              <div class="price-line-item">
+                <span>2. Refundable Security Deposit:</span>
+                <strong id="summaryDepositFee">$100.00</strong>
+              </div>
+              <div class="price-line-item total-line">
+                <span>Estimated Total (Before Taxes):</span>
+                <span id="summaryTotalEstimated" class="price-val">$145.00</span>
+              </div>
+              <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.6rem;">
+                * The security deposit is separate from the rental charge and is refunded after inspection.
+              </p>
+            </div>
+
+            <button type="submit" class="btn-submit-booking" id="btnSubmit">
+              <i class="fa-solid fa-paper-plane"></i> SUBMIT BOOKING REQUEST &bull; AUTHORIZE
+            </button>
+
+            <div class="alert-msg" id="alertMsg"></div>
+
+          </form>
         </div>
       </div>
+
     </div>
-
-    <!-- RIGHT: THE COMPLETE 10-FIELD BOOKING REQUEST FORM -->
-    <div>
-      <div class="booking-form-card">
-        <div class="section-eyebrow">ONLINE RESERVATION REQUEST</div>
-        <h2>RESERVE YOUR TRAILER</h2>
-
-        <div class="approval-alert-box">
-          <i class="fa-solid fa-triangle-exclamation approval-alert-icon"></i>
-          <div class="approval-alert-text">
-            <strong>IMPORTANT:</strong> Submitting a booking request does not guarantee availability. All booking requests are reviewed and approved by L&amp;D Trailers before the rental is confirmed.
-          </div>
-        </div>
-
-        <form id="onlineBookingForm" onsubmit="handleBookingSubmit(event)">
-          
-          <!-- Field 1: Customer's Full Name -->
-          <div class="form-group">
-            <label class="form-label" for="bookingName">1. Customer's Full Name *</label>
-            <input type="text" id="bookingName" class="form-input" placeholder="e.g. Johnathan Smith" required>
-          </div>
-
-          <!-- Field 2 & 3: Phone Number & Email Address -->
-          <div class="form-row-2">
-            <div class="form-group">
-              <label class="form-label" for="bookingPhone">2. Phone Number *</label>
-              <input type="tel" id="bookingPhone" class="form-input" placeholder="e.g. (662) 555-0199" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="bookingEmail">3. Email Address *</label>
-              <input type="email" id="bookingEmail" class="form-input" placeholder="e.g. john@example.com" required>
-            </div>
-          </div>
-
-          <!-- Field 4: Driver's License Info -->
-          <div class="form-group">
-            <label class="form-label" for="bookingDL">
-              <span>4. Driver's License Information *</span>
-              <span class="form-helper-badge"><i class="fa-solid fa-shield-check"></i> Verified securely at pickup</span>
-            </label>
-            <input type="text" id="bookingDL" class="form-input" placeholder="State &amp; Driver's License # (e.g. MS - S1234567)" required>
-          </div>
-
-          <!-- Field 5 & 6: Requested Trailer & Rental Period -->
-          <div class="form-row-2">
-            <div class="form-group">
-              <label class="form-label" for="bookingTrailer">5. Requested Trailer *</label>
-              <select id="bookingTrailer" class="form-select" onchange="onTrailerSelectChange(this.value)" required>
-                <option value="trailer-1" selected>Trailer #1: 6x12 Utility Trailer</option>
-                <option value="trailer-2">Trailer #2: 6x12 Utility Trailer</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="bookingPeriod">6. Rental Period *</label>
-              <select id="bookingPeriod" class="form-select" onchange="updateLivePricing()" required>
-                <option value="daily" selected>Daily Rental ($45 - 24 hrs)</option>
-                <option value="weekend">Weekend Special ($85 - Fri-Sun)</option>
-                <option value="3day">3-Day Rental ($115 - 72 hrs)</option>
-                <option value="weekly">Weekly Rental ($225 - 7 days)</option>
-                <option value="monthly">Monthly Rental ($550 - 30 days)</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Field 7 & 8: Pickup Date/Time & Return Date/Time -->
-          <div class="form-row-2">
-            <div class="form-group">
-              <label class="form-label" for="pickupDateTime">7. Pickup Date and Time *</label>
-              <input type="datetime-local" id="pickupDateTime" class="form-input" required onchange="calculateDurationDates()">
-            </div>
-            <div class="form-group">
-              <label class="form-label" for="returnDateTime">8. Return Date and Time *</label>
-              <input type="datetime-local" id="returnDateTime" class="form-input" required>
-            </div>
-          </div>
-
-          <!-- Field 9: Intended Use -->
-          <div class="form-group">
-            <label class="form-label" for="bookingUse">9. Intended Use of Trailer *</label>
-            <input type="text" id="bookingUse" class="form-input" placeholder="e.g. Lawn care equipment, home furniture move, contractor lumber" required>
-          </div>
-
-          <!-- Field 10: Additional Comments -->
-          <div class="form-group">
-            <label class="form-label" for="bookingComments">10. Additional Comments</label>
-            <textarea id="bookingComments" class="form-textarea" rows="3" placeholder="Tow vehicle make/model, hitch ball size (2&quot; standard), or special timing notes..."></textarea>
-          </div>
-
-          <!-- Live Price Breakdown Summary Box (Separate Line Items) -->
-          <div class="price-breakdown-box">
-            <div class="price-breakdown-title">
-              <i class="fa-solid fa-calculator text-red"></i> LIVE ESTIMATED PRICE SUMMARY
-            </div>
-            <div class="price-line-item">
-              <span>Selected Unit:</span>
-              <strong id="summaryTrailerName">Trailer #1: 6x12 Utility Trailer</strong>
-            </div>
-            <div class="price-line-item">
-              <span>1. Rental Payment (<span id="summaryPeriodLabel">Daily - 24 hrs</span>):</span>
-              <strong id="summaryRentalFee">$45.00</strong>
-            </div>
-            <div class="price-line-item">
-              <span>2. Refundable Security Deposit:</span>
-              <strong id="summaryDepositFee">$100.00</strong>
-            </div>
-            <div class="price-line-item total-line">
-              <span>Estimated Total (Before Taxes):</span>
-              <span id="summaryTotalEstimated" class="price-val">$145.00</span>
-            </div>
-            <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.6rem;">
-              * The security deposit is separate from the rental charge and is refunded after inspection.
-            </p>
-          </div>
-
-          <button type="submit" class="btn-submit-booking" id="btnSubmit">
-            <i class="fa-solid fa-paper-plane"></i> SUBMIT BOOKING REQUEST &bull; AUTHORIZE
-          </button>
-
-          <div class="alert-msg" id="alertMsg"></div>
-
-        </form>
-      </div>
-    </div>
-
   </div>
 
   <script>
-    // Rates and deposits map
+    // Rates & deposits configuration
     const PRICING = {
       daily: { rate: 45, deposit: 100, hours: 24, label: 'Daily - 24 hrs' },
       weekend: { rate: 85, deposit: 100, hours: 72, label: 'Weekend - Fri-Sun' },
@@ -713,7 +845,7 @@
       renderCalendar();
     }
 
-    // Render Calendar matching screenshot exactly
+    // Render Calendar
     function renderCalendar() {
       const grid = document.getElementById('calendarDaysGrid');
       const label = document.getElementById('calendarMonthLabel');
@@ -760,7 +892,7 @@
           cell.classList.add('available');
           cell.title = 'Available - Click to Select Pickup Date';
 
-          // Selected Day highlight (Day 24 solid red)
+          // Selected Day highlight (Day 24 solid red square)
           if (selectedBookingDate === dateStr) {
             cell.classList.add('selected');
           }
