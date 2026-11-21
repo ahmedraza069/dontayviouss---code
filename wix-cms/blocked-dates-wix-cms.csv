@@ -1,0 +1,6 @@
+Title,dateString,trailerId,trailerName,startDate,endDate,reason,isActive,notes
+"BLK-101","2026-11-26","all","All Fleet","2026-11-26T00:00:00","2026-11-26T23:59:59","Thanksgiving Day - Corinth Depot Closed",TRUE,"All trailer pickups closed for holiday"
+"BLK-102","2026-11-27","all","All Fleet","2026-11-27T00:00:00","2026-11-27T23:59:59","Holiday Weekend Fleet Inspection",TRUE,"Annual safety walkaround inspection"
+"BLK-103","2026-12-05","trailer-1","Trailer #1: 6x12 Utility Trailer","2026-12-05T08:00:00","2026-12-05T17:00:00","Routine Wheel Bearing Grease & Tire Check",TRUE,"Scheduled routine maintenance for Trailer 1"
+"BLK-104","2026-12-25","all","All Fleet","2026-12-25T00:00:00","2026-12-25T23:59:59","Christmas Day - Depot Closed",TRUE,"All operations closed for Christmas"
+"BLK-105","2027-01-01","all","All Fleet","2027-01-01T00:00:00","2027-01-01T23:59:59","New Year's Day - Depot Closed",TRUE,"Depot closed for New Year holiday"

@@ -1,0 +1,72 @@
+{
+  "collectionName": "BlockedDates",
+  "collectionId": "BlockedDates",
+  "permissions": "Anyone can read, Only Admin can create/update/delete",
+  "fields": [
+    {
+      "fieldKey": "title",
+      "fieldName": "Block Reference",
+      "type": "Text",
+      "required": true,
+      "example": "BLK-101"
+    },
+    {
+      "fieldKey": "dateString",
+      "fieldName": "Date String (YYYY-MM-DD)",
+      "type": "Text",
+      "required": true,
+      "description": "Used directly by Wix Velo DatePicker to disable the date",
+      "example": "2026-11-26"
+    },
+    {
+      "fieldKey": "trailerId",
+      "fieldName": "Trailer ID",
+      "type": "Text",
+      "required": true,
+      "description": "'all', 'trailer-1', or 'trailer-2'",
+      "example": "all"
+    },
+    {
+      "fieldKey": "trailerName",
+      "fieldName": "Trailer Name",
+      "type": "Text",
+      "required": false,
+      "example": "All Fleet / Trailer #1"
+    },
+    {
+      "fieldKey": "startDate",
+      "fieldName": "Start Date",
+      "type": "Date and Time",
+      "required": true,
+      "example": "2026-11-26T00:00:00"
+    },
+    {
+      "fieldKey": "endDate",
+      "fieldName": "End Date",
+      "type": "Date and Time",
+      "required": true,
+      "example": "2026-11-26T23:59:59"
+    },
+    {
+      "fieldKey": "reason",
+      "fieldName": "Block Reason",
+      "type": "Text",
+      "required": true,
+      "example": "Thanksgiving Day - Corinth Depot Closed"
+    },
+    {
+      "fieldKey": "isActive",
+      "fieldName": "Active Status",
+      "type": "Boolean",
+      "required": true,
+      "example": true
+    },
+    {
+      "fieldKey": "notes",
+      "fieldName": "Internal Notes",
+      "type": "Text",
+      "required": false,
+      "example": "All pickups closed for holiday"
+    }
+  ]
+}
