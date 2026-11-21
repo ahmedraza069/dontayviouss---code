@@ -5,33 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>L&D Trailers - Availability Calendar & Reservation Request</title>
   
-  <!-- Fonts: Russo One, Chakra Petch, Inter, Montserrat -->
+  <!-- Google Fonts: Russo One, Chakra Petch, Inter, Montserrat -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:ital,wght@0,600;0,700;1,700&family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800;900&family=Russo+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800;900&family=Russo+One&display=swap" rel="stylesheet">
+  
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <style>
-    /* CSS RESET & VARIABLES */
+    /* ==========================================================================
+       CSS VARIABLES & ROOT STYLING
+       ========================================================================== */
     :root {
       --bg-pitch: #0A0A0C;
       --bg-card: #141619;
-      --bg-input: #0E1013;
-      --border-silver: #2E323B;
+      --bg-box: #0E1013;
+      --bg-input: #0B0D10;
+      --border-silver: #262A33;
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      
+      /* Industrial Red Accents */
       --red-primary: #E60000;
       --red-hover: #FF1A1A;
-      --red-glow: rgba(230, 0, 0, 0.4);
-      --red-subtle: rgba(230, 0, 0, 0.15);
-      --silver-light: #C0C5CE;
-      --silver-dark: #8E95A5;
-      --text-muted: #6B7280;
-      --text-white: #FFFFFF;
+      --red-glow: rgba(230, 0, 0, 0.35);
+      --red-subtle: rgba(230, 0, 0, 0.12);
+      --red-range: rgba(230, 0, 0, 0.22);
+      
+      /* Soft Off-White Typography (Eliminates eye glare & harsh contrast) */
+      --text-offwhite: #ECEEF2;
+      --text-title: #E2E6EC;
+      --text-body: #B0B8C4;
+      --text-muted: #7A8392;
       --green-available: #2ECC71;
+      
+      /* Typography Standards */
       --font-heading: 'Russo One', sans-serif;
       --font-subheading: 'Chakra Petch', sans-serif;
       --font-body: 'Inter', sans-serif;
-      --font-price: 'Montserrat', sans-serif;
+      --font-num: 'Montserrat', sans-serif;
     }
 
     /* Zero Margin & Zero Padding Root for Clean Iframe Embed */
@@ -41,26 +53,41 @@
       width: 100% !important;
       max-width: 100% !important;
       background-color: var(--bg-pitch);
-      color: var(--text-white);
+      color: var(--text-offwhite);
       font-family: var(--font-body);
       font-size: 15px;
       line-height: 1.5;
       box-sizing: border-box;
       overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
     }
 
     *, *::before, *::after {
       box-sizing: inherit;
       margin: 0;
       padding: 0;
+      /* Remove all blurry text-shadows across all elements for razor-sharp clarity */
+      text-shadow: none !important;
+    }
+
+    /* Off-white Headings with crisp rendering (Weight 400 for Russo One prevents browser faux-bold blur) */
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-offwhite) !important;
+      font-weight: 400 !important;
+      text-shadow: none !important;
+      filter: none !important;
+      letter-spacing: 0.03em;
     }
 
     .text-red {
       color: var(--red-primary) !important;
     }
 
-    /* ROOT WRAPPER (100% Width Responsive) */
+    /* ==========================================================================
+       RESPONSIVE EMBED WRAPPER (100% Width)
+       ========================================================================== */
     .booking-embed-root {
       width: 100%;
       max-width: 100%;
@@ -69,7 +96,7 @@
       margin: 0 auto;
     }
 
-    /* 2-COLUMN MAIN LAYOUT GRID */
+    /* 2-Column Grid Layout */
     .booking-layout-grid {
       width: 100%;
       max-width: 100%;
@@ -80,43 +107,40 @@
       box-sizing: border-box;
     }
 
-    /* --------------------------------------------------------------------------
-       BREAKPOINT 1: LARGE DESKTOP & 4K (min-width: 1441px)
-       -------------------------------------------------------------------------- */
+    /* ==========================================================================
+       BREAKPOINT SPECIFICATIONS (5 Responsive Breakpoints)
+       ========================================================================== */
+    /* 1. Large Desktop (1441px+) */
     @media (min-width: 1441px) {
       .booking-embed-root {
-        max-width: 1600px;
+        max-width: 1560px;
         padding: 24px;
       }
       .booking-layout-grid {
-        gap: 32px;
+        gap: 28px;
       }
       .calendar-card, .booking-form-card, .industrial-card {
         padding: 2.2rem !important;
       }
     }
 
-    /* --------------------------------------------------------------------------
-       BREAKPOINT 2: STANDARD LAPTOP / DESKTOP (1200px - 1440px)
-       -------------------------------------------------------------------------- */
+    /* 2. Standard Desktop / Laptop (1200px - 1440px) */
     @media (max-width: 1440px) and (min-width: 1200px) {
       .booking-embed-root {
-        padding: 18px;
+        padding: 16px;
       }
       .booking-layout-grid {
-        gap: 24px;
+        gap: 22px;
       }
     }
 
-    /* --------------------------------------------------------------------------
-       BREAKPOINT 3: SMALL LAPTOP / TABLET LANDSCAPE (992px - 1199px)
-       -------------------------------------------------------------------------- */
+    /* 3. Small Laptop / Tablet Landscape (992px - 1199px) */
     @media (max-width: 1199px) and (min-width: 992px) {
       .booking-embed-root {
         padding: 12px;
       }
       .booking-layout-grid {
-        gap: 18px;
+        gap: 16px;
         grid-template-columns: 1fr 1fr;
       }
       .calendar-card, .booking-form-card {
@@ -124,42 +148,42 @@
       }
     }
 
-    /* --------------------------------------------------------------------------
-       BREAKPOINT 4: TABLET PORTRAIT (768px - 991px)
-       -------------------------------------------------------------------------- */
+    /* 4. Tablet Portrait (768px - 991px) */
     @media (max-width: 991px) and (min-width: 768px) {
       .booking-layout-grid {
         grid-template-columns: 1fr !important;
-        gap: 24px !important;
+        gap: 22px !important;
       }
       .booking-embed-root {
-        padding: 16px;
+        padding: 14px;
       }
     }
 
-    /* --------------------------------------------------------------------------
-       BREAKPOINT 5: MOBILE SMARTPHONE (320px - 767px)
-       -------------------------------------------------------------------------- */
+    /* 5. Smartphone Mobile (320px - 767px) */
     @media (max-width: 767px) {
       .booking-embed-root {
-        padding: 8px !important;
+        padding: 6px !important;
       }
       .booking-layout-grid {
         grid-template-columns: 1fr !important;
         gap: 16px !important;
+      }
+      .fleet-boxes-container {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
       }
       .form-row-2 {
         grid-template-columns: 1fr !important;
         gap: 0 !important;
       }
       .calendar-card, .booking-form-card, .industrial-card {
-        padding: 1.25rem 1rem !important;
+        padding: 1.15rem 0.9rem !important;
       }
       .booking-form-card h2 {
-        font-size: 1.45rem !important;
+        font-size: 1.35rem !important;
       }
       .calendar-header h2 {
-        font-size: 1.1rem !important;
+        font-size: 1.05rem !important;
       }
       .calendar-cell {
         font-size: 0.8rem !important;
@@ -167,7 +191,7 @@
       .calendar-legend-bar {
         flex-direction: column !important;
         align-items: flex-start !important;
-        gap: 10px !important;
+        gap: 8px !important;
       }
       .price-breakdown-box {
         padding: 1rem !important;
@@ -177,20 +201,22 @@
       }
     }
 
-    /* LEFT COLUMN: CALENDAR & FLEET */
+    /* ==========================================================================
+       LEFT COLUMN: CALENDAR & FLEET BOX CARDS
+       ========================================================================== */
     .left-col-stack {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 18px;
       width: 100%;
     }
 
-    /* Calendar Card */
+    /* Calendar Main Container */
     .calendar-card {
       background: var(--bg-card);
       border: 1px solid var(--border-silver);
       border-radius: 8px;
-      padding: 1.8rem;
+      padding: 1.6rem;
       width: 100%;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     }
@@ -199,20 +225,20 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.1rem;
       flex-wrap: wrap;
       gap: 8px;
     }
 
     .calendar-header h2 {
       font-family: var(--font-heading);
-      font-size: 1.25rem;
-      color: #FFFFFF;
+      font-size: 1.2rem;
+      color: var(--text-offwhite) !important;
       margin-bottom: 0.2rem;
       text-transform: uppercase;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.55rem;
     }
 
     .calendar-header p {
@@ -227,9 +253,9 @@
     }
 
     .cal-btn {
-      background: #0A0A0C;
+      background: var(--bg-box);
       border: 1px solid var(--border-silver);
-      color: #FFFFFF;
+      color: var(--text-offwhite);
       width: 32px;
       height: 32px;
       border-radius: 4px;
@@ -246,28 +272,60 @@
     }
 
     #calendarMonthLabel {
-      font-family: var(--font-heading);
+      font-family: var(--font-subheading);
       font-weight: 700;
-      color: #FFFFFF;
+      color: var(--text-offwhite);
       min-width: 130px;
       text-align: center;
-      font-size: 0.95rem;
+      font-size: 0.98rem;
+      letter-spacing: 0.04em;
     }
 
+    /* Date Range Status Indicator */
+    .range-status-bar {
+      background: var(--bg-box);
+      border: 1px solid var(--border-silver);
+      border-radius: 4px;
+      padding: 0.6rem 0.85rem;
+      font-size: 0.82rem;
+      color: var(--text-body);
+      margin-bottom: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .range-status-bar strong {
+      color: var(--text-offwhite);
+    }
+
+    .range-status-bar .days-pill {
+      background: var(--red-subtle);
+      border: 1px solid var(--red-primary);
+      color: #FFF;
+      font-weight: 700;
+      font-family: var(--font-num);
+      font-size: 0.75rem;
+      padding: 2px 7px;
+      border-radius: 3px;
+    }
+
+    /* Calendar Grid */
     .calendar-grid {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 0.35rem;
+      gap: 0.3rem;
       text-align: center;
       width: 100%;
     }
 
     .calendar-day-header {
-      font-family: var(--font-heading);
-      font-size: 0.78rem;
+      font-family: var(--font-subheading);
+      font-size: 0.8rem;
       font-weight: 700;
       color: var(--text-muted);
-      padding: 0.3rem 0;
+      padding: 0.35rem 0;
     }
 
     .calendar-cell {
@@ -275,14 +333,16 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: var(--bg-pitch);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 2px;
+      background: var(--bg-box);
+      border: 1px solid var(--border-subtle);
+      border-radius: 3px;
       font-size: 0.88rem;
       font-weight: 600;
-      color: var(--silver-light);
+      color: var(--text-body);
       cursor: pointer;
-      transition: all 0.2s ease;
+      position: relative;
+      transition: all 0.15s ease;
+      user-select: none;
     }
 
     .calendar-cell.available:hover {
@@ -291,18 +351,35 @@
       color: #FFF;
     }
 
-    /* Selected Date (Solid Red Highlight) */
+    /* Multi-Day Range Selection States */
     .calendar-cell.selected {
       background: var(--red-primary) !important;
-      color: #FFF !important;
+      color: #FFFFFF !important;
       border-color: var(--red-primary) !important;
       font-weight: 700;
-      box-shadow: 0 0 10px var(--red-glow);
+      z-index: 2;
+    }
+
+    .calendar-cell.range-start {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    .calendar-cell.range-end {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    .calendar-cell.in-range {
+      background: var(--red-range) !important;
+      color: #FFFFFF !important;
+      border-color: rgba(230, 0, 0, 0.4) !important;
+      border-radius: 0 !important;
     }
 
     .calendar-cell.booked {
-      background: rgba(255, 255, 255, 0.03);
-      color: #454A54;
+      background: rgba(255, 255, 255, 0.02);
+      color: #404552;
       cursor: not-allowed;
       text-decoration: line-through;
     }
@@ -311,32 +388,35 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 1.25rem;
+      margin-top: 1.15rem;
       font-size: 0.8rem;
-      color: var(--silver-dark);
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      padding-top: 1rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-silver);
+      padding-top: 0.85rem;
     }
 
     .legend-dots {
       display: flex;
-      gap: 1rem;
+      gap: 1.1rem;
     }
 
     .btn-link-demo {
       background: none;
       border: none;
-      color: var(--silver-light);
+      color: var(--text-muted);
       text-decoration: underline;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
+      transition: color 0.2s;
     }
 
     .btn-link-demo:hover {
       color: var(--red-primary);
     }
 
-    /* Fleet Summary Card */
+    /* ==========================================================================
+       FLEET PREVIEW: SIDE-BY-SIDE BOX CARDS (Replaces Long Elongated Rows)
+       ========================================================================== */
     .industrial-card {
       background: var(--bg-card);
       border: 1px solid var(--border-silver);
@@ -347,53 +427,150 @@
 
     .industrial-card h3 {
       font-family: var(--font-heading);
-      font-size: 1.15rem;
-      margin-bottom: 0.9rem;
+      font-size: 1.1rem;
+      margin-bottom: 0.85rem;
       text-transform: uppercase;
+      color: var(--text-offwhite) !important;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .industrial-card h3 small {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: none;
+    }
+
+    /* 2-Column Box Grid for Fleet Trailers */
+    .fleet-boxes-container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      width: 100%;
+    }
+
+    .fleet-box-card {
+      background: var(--bg-box);
+      border: 1px solid var(--border-silver);
+      border-radius: 6px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .fleet-box-card:hover {
+      border-color: #4A5060;
+      transform: translateY(-2px);
+    }
+
+    .fleet-box-card.active {
+      border-color: var(--red-primary);
+      background: #170A0A;
+      box-shadow: 0 0 14px rgba(230, 0, 0, 0.25);
+    }
+
+    .fleet-box-img-wrap {
+      width: 100%;
+      height: 110px;
+      position: relative;
+      background: #000;
+      overflow: hidden;
+    }
+
+    .fleet-box-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+
+    .fleet-box-card:hover .fleet-box-img {
+      transform: scale(1.04);
+    }
+
+    .fleet-unit-tag {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      background: rgba(10, 10, 12, 0.88);
+      border: 1px solid var(--border-silver);
+      color: var(--text-offwhite);
+      font-family: var(--font-subheading);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 3px;
+      letter-spacing: 0.05em;
+    }
+
+    .fleet-box-card.active .fleet-unit-tag {
+      border-color: var(--red-primary);
+      color: var(--red-primary);
+    }
+
+    .fleet-box-body {
+      padding: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .fleet-box-title {
+      font-family: var(--font-subheading);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text-offwhite) !important;
+      margin-bottom: 0.45rem;
+      line-height: 1.25;
+    }
+
+    .fleet-box-specs {
+      font-size: 0.77rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 0.75rem;
+      flex-grow: 1;
+    }
+
+    .fleet-box-specs span {
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .fleet-box-select-btn {
+      width: 100%;
+      padding: 0.45rem 0.5rem;
+      background: #14171C;
+      border: 1px solid var(--border-silver);
+      border-radius: 4px;
+      color: var(--text-body);
+      font-family: var(--font-subheading);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      text-align: center;
+      transition: all 0.2s;
+      letter-spacing: 0.05em;
+    }
+
+    .fleet-box-card.active .fleet-box-select-btn {
+      background: var(--red-primary);
+      border-color: var(--red-primary);
       color: #FFFFFF;
     }
 
-    .fleet-item-row {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      background: var(--bg-pitch);
-      padding: 0.75rem;
-      border-radius: 4px;
-      border: 1px solid transparent;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-bottom: 0.75rem;
-    }
-
-    .fleet-item-row:last-child {
-      margin-bottom: 0;
-    }
-
-    .fleet-item-row:hover {
-      border-color: var(--border-silver);
-    }
-
-    .fleet-item-row.active {
-      border-color: var(--red-primary);
-      background: #190505;
-    }
-
-    .fleet-thumb {
-      width: 70px;
-      height: 50px;
-      object-fit: cover;
-      border-radius: 2px;
-      flex-shrink: 0;
-    }
-
-    /* --------------------------------------------------------------------------
-       RIGHT: RESERVATION REQUEST FORM
-       -------------------------------------------------------------------------- */
+    /* ==========================================================================
+       RIGHT COLUMN: RESERVATION REQUEST FORM
+       ========================================================================== */
     .booking-form-card {
       background: var(--bg-card);
       border: 1px solid var(--border-silver);
-      padding: 2.2rem;
+      padding: 2.1rem;
       border-radius: 8px;
       position: relative;
       width: 100%;
@@ -403,70 +580,71 @@
     .section-eyebrow {
       display: flex;
       align-items: center;
-      gap: 0.8rem;
+      gap: 0.75rem;
       color: var(--red-primary);
-      font-family: var(--font-heading);
-      font-size: 0.85rem;
+      font-family: var(--font-subheading);
+      font-size: 0.82rem;
       font-weight: 700;
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.35rem;
     }
 
     .section-eyebrow::before,
     .section-eyebrow::after {
       content: "";
       height: 2px;
-      width: 28px;
+      width: 26px;
       background-color: var(--red-primary);
     }
 
     .booking-form-card h2 {
       font-family: var(--font-heading);
-      font-size: 1.8rem;
-      color: #FFFFFF;
-      margin-bottom: 1.25rem;
+      font-size: 1.7rem;
+      color: var(--text-offwhite) !important;
+      margin-bottom: 1.15rem;
       text-transform: uppercase;
+      letter-spacing: 0.03em;
     }
 
     .approval-alert-box {
-      background: rgba(230, 0, 0, 0.1);
+      background: rgba(230, 0, 0, 0.08);
       border: 1px solid var(--red-primary);
-      padding: 1.1rem 1.3rem;
+      padding: 1rem 1.2rem;
       border-radius: 4px;
       display: flex;
       align-items: flex-start;
       gap: 0.85rem;
-      margin-bottom: 1.6rem;
+      margin-bottom: 1.5rem;
     }
 
     .approval-alert-icon {
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       color: var(--red-primary);
       flex-shrink: 0;
       margin-top: 2px;
     }
 
     .approval-alert-text {
-      font-size: 0.88rem;
-      color: var(--silver-light);
-      line-height: 1.5;
+      font-size: 0.85rem;
+      color: var(--text-body);
+      line-height: 1.45;
     }
 
     .approval-alert-text strong {
-      color: #FFFFFF;
+      color: var(--text-offwhite);
       text-transform: uppercase;
     }
 
     .form-group {
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.15rem;
       width: 100%;
     }
 
     .form-row-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1.15rem;
+      gap: 1.1rem;
       width: 100%;
     }
 
@@ -474,16 +652,17 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-family: var(--font-heading);
-      font-size: 0.88rem;
+      font-family: var(--font-subheading);
+      font-size: 0.85rem;
       font-weight: 700;
-      color: #FFFFFF;
+      color: var(--text-title);
       text-transform: uppercase;
-      margin-bottom: 0.45rem;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.03em;
     }
 
     .form-helper-badge {
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: var(--red-primary);
       font-weight: 600;
       font-family: var(--font-body);
@@ -497,10 +676,10 @@
       background: var(--bg-input);
       border: 1px solid var(--border-silver);
       border-radius: 4px;
-      padding: 0.85rem 1rem;
-      color: #FFFFFF;
+      padding: 0.8rem 0.95rem;
+      color: var(--text-offwhite);
       font-family: var(--font-body);
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       transition: all 0.2s ease;
     }
 
@@ -509,66 +688,76 @@
     .form-textarea:focus {
       outline: none;
       border-color: var(--red-primary);
-      background: #16181D;
-      box-shadow: 0 0 10px rgba(230, 0, 0, 0.25);
+      background: #12151B;
+      box-shadow: 0 0 10px rgba(230, 0, 0, 0.2);
     }
 
     .form-select option {
       background: #141619;
-      color: #FFFFFF;
+      color: var(--text-offwhite);
     }
 
-    /* Price Breakdown Box */
+    /* Live Price Breakdown Summary Box */
     .price-breakdown-box {
       background: #0B0D10;
       border: 1px solid var(--border-silver);
-      border-radius: 4px;
+      border-radius: 6px;
       padding: 1.25rem;
-      margin: 1.6rem 0;
+      margin: 1.5rem 0;
       width: 100%;
     }
 
     .price-breakdown-title {
-      font-family: var(--font-heading);
-      font-size: 0.95rem;
+      font-family: var(--font-subheading);
+      font-size: 0.92rem;
       font-weight: 700;
-      color: var(--silver-light);
+      color: var(--text-title);
       text-transform: uppercase;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid var(--border-silver);
       padding-bottom: 0.5rem;
-      margin-bottom: 0.9rem;
+      margin-bottom: 0.85rem;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      justify-content: space-between;
+      letter-spacing: 0.05em;
     }
 
     .price-line-item {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      font-size: 0.92rem;
-      color: var(--silver-light);
+      align-items: flex-start;
+      font-size: 0.88rem;
+      color: var(--text-body);
       margin-bottom: 0.55rem;
     }
 
+    .price-line-item .calc-subtext {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      display: block;
+      margin-top: 2px;
+    }
+
     .price-line-item strong {
-      color: #FFFFFF;
-      font-family: var(--font-price);
+      color: var(--text-offwhite);
+      font-family: var(--font-num);
       font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
     }
 
     .price-line-item.total-line {
       border-top: 1px solid var(--border-silver);
-      padding-top: 0.85rem;
-      margin-top: 0.85rem;
-      font-family: var(--font-heading);
-      font-size: 1.1rem;
-      color: #FFFFFF;
+      padding-top: 0.8rem;
+      margin-top: 0.8rem;
+      font-family: var(--font-subheading);
+      font-size: 1.05rem;
+      color: var(--text-title);
     }
 
     .price-line-item.total-line .price-val {
-      font-family: var(--font-price);
-      font-size: 1.55rem;
+      font-family: var(--font-num);
+      font-size: 1.5rem;
       font-weight: 900;
       color: var(--red-primary);
     }
@@ -578,12 +767,12 @@
       background: var(--red-primary);
       color: #FFFFFF;
       border: none;
-      padding: 1.15rem;
+      padding: 1.1rem;
       font-family: var(--font-heading);
-      font-size: 1.1rem;
-      font-weight: 700;
+      font-size: 1.05rem;
+      font-weight: 400 !important;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
       border-radius: 4px;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -591,12 +780,12 @@
       align-items: center;
       justify-content: center;
       gap: 0.6rem;
-      box-shadow: 0 4px 15px rgba(230, 0, 0, 0.3);
+      box-shadow: 0 4px 15px rgba(230, 0, 0, 0.25);
     }
 
     .btn-submit-booking:hover {
       background: var(--red-hover);
-      box-shadow: 0 6px 25px rgba(230, 0, 0, 0.5);
+      box-shadow: 0 6px 20px rgba(230, 0, 0, 0.45);
       transform: translateY(-2px);
     }
 
@@ -607,17 +796,25 @@
     .alert-msg {
       display: none;
       margin-top: 1.25rem;
-      padding: 1rem;
+      padding: 0.95rem;
       border-radius: 4px;
-      font-size: 0.92rem;
+      font-size: 0.88rem;
       text-align: center;
+      line-height: 1.4;
     }
 
     .alert-msg.success {
       display: block;
-      background: rgba(46, 204, 113, 0.15);
+      background: rgba(46, 204, 113, 0.12);
       border: 1px solid #2ECC71;
       color: #2ECC71;
+    }
+
+    .alert-msg.error {
+      display: block;
+      background: rgba(230, 0, 0, 0.12);
+      border: 1px solid var(--red-primary);
+      color: #FF5C5C;
     }
   </style>
 </head>
@@ -628,25 +825,38 @@
     
     <div class="booking-layout-grid">
       
-      <!-- LEFT: REAL-TIME AVAILABILITY CALENDAR & FLEET PREVIEW -->
+      <!-- LEFT: REAL-TIME MULTI-DAY CALENDAR & BOX FLEET CARDS -->
       <div class="left-col-stack">
+        
+        <!-- Availability Calendar Card -->
         <div class="calendar-card">
           <div class="calendar-header">
             <div>
               <h2><i class="fa-regular fa-calendar-days text-red"></i> AVAILABILITY CALENDAR</h2>
-              <p>Click any green available date to pre-fill your pickup date below.</p>
+              <p>Click dates to pick a range (e.g. 1, 3, or 4+ days). Price calculates automatically.</p>
             </div>
             <div class="cal-controls">
-              <button type="button" class="cal-btn" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+              <button type="button" class="cal-btn" onclick="changeMonth(-1)" title="Previous Month"><i class="fa-solid fa-chevron-left"></i></button>
               <span id="calendarMonthLabel">November 2026</span>
-              <button type="button" class="cal-btn" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
+              <button type="button" class="cal-btn" onclick="changeMonth(1)" title="Next Month"><i class="fa-solid fa-chevron-right"></i></button>
             </div>
           </div>
 
-          <div class="calendar-grid" id="calendarDaysGrid">
-            <!-- Populated dynamically via JavaScript -->
+          <!-- Date Range Status Banner -->
+          <div class="range-status-bar" id="rangeStatusBar">
+            <div>
+              <i class="fa-solid fa-calendar-check text-red"></i>
+              <span id="rangeStatusText">Pickup: <strong>Nov 24, 2026</strong> &rarr; Return: <strong>Nov 25, 2026</strong></span>
+            </div>
+            <span class="days-pill" id="rangeDaysPill">1 DAY (24H)</span>
           </div>
 
+          <!-- Calendar Days Grid -->
+          <div class="calendar-grid" id="calendarDaysGrid">
+            <!-- Rendered dynamically by JavaScript -->
+          </div>
+
+          <!-- Legend Bar -->
           <div class="calendar-legend-bar">
             <div class="legend-dots">
               <span><i class="fa-solid fa-circle" style="color: #2ECC71; font-size: 0.65rem;"></i> Available</span>
@@ -658,27 +868,57 @@
           </div>
         </div>
 
-        <!-- Quick Fleet Card Summary -->
+        <!-- Initial Fleet Card: Box Format (2 Columns) -->
         <div class="industrial-card">
-          <h3>CURRENT INITIAL FLEET</h3>
-          <div>
-            <div class="fleet-item-row active" id="fleetRow1" onclick="selectFleetTrailer('trailer-1', 'Trailer #1: 6x12 Utility Trailer')">
-              <img src="https://raw.githubusercontent.com/ahmedraza069/dontayviouss---code/main/assets/trailer-1.jpg" alt="Trailer 1" class="fleet-thumb">
-              <div>
-                <strong style="color: #FFF; font-size: 0.95rem;">Trailer #1: 6x12 Utility Trailer</strong>
-                <div style="font-size: 0.8rem; color: var(--silver-dark);">Tandem Axle &bull; Chrome Wheels &bull; Ramp Gate</div>
+          <h3>
+            <span>CURRENT INITIAL FLEET</span>
+            <small>Select unit to inspect &amp; book</small>
+          </h3>
+          
+          <!-- Box Cards Container -->
+          <div class="fleet-boxes-container">
+            
+            <!-- Trailer Box 1 -->
+            <div class="fleet-box-card active" id="fleetBox1" onclick="selectFleetTrailer('trailer-1', 'Trailer #1: 6x12 Utility Trailer')">
+              <div class="fleet-box-img-wrap">
+                <img src="https://raw.githubusercontent.com/ahmedraza069/dontayviouss---code/main/assets/trailer-1.jpg" alt="Trailer #1" class="fleet-box-img">
+                <span class="fleet-unit-tag">TRAILER #1</span>
+              </div>
+              <div class="fleet-box-body">
+                <h4 class="fleet-box-title">Trailer #1: 6×12 Utility</h4>
+                <div class="fleet-box-specs">
+                  <span>&bull; Tandem Axle (Heavy Duty)</span>
+                  <span>&bull; Chrome Wheels</span>
+                  <span>&bull; Reinforced Ramp Gate</span>
+                </div>
+                <div class="fleet-box-select-btn" id="fleetBtn1">
+                  <i class="fa-solid fa-check"></i> SELECTED UNIT
+                </div>
               </div>
             </div>
 
-            <div class="fleet-item-row" id="fleetRow2" onclick="selectFleetTrailer('trailer-2', 'Trailer #2: 6x12 Utility Trailer')">
-              <img src="https://raw.githubusercontent.com/ahmedraza069/dontayviouss---code/main/assets/trailer-wood-deck.jpg" alt="Trailer 2" class="fleet-thumb">
-              <div>
-                <strong style="color: #FFF; font-size: 0.95rem;">Trailer #2: 6x12 Utility Trailer</strong>
-                <div style="font-size: 0.8rem; color: var(--silver-dark);">Hardwood Deck &bull; D-Rings &bull; Spring-Assist Ramp</div>
+            <!-- Trailer Box 2 -->
+            <div class="fleet-box-card" id="fleetBox2" onclick="selectFleetTrailer('trailer-2', 'Trailer #2: 6x12 Utility Trailer')">
+              <div class="fleet-box-img-wrap">
+                <img src="https://raw.githubusercontent.com/ahmedraza069/dontayviouss---code/main/assets/trailer-wood-deck.jpg" alt="Trailer #2" class="fleet-box-img">
+                <span class="fleet-unit-tag">TRAILER #2</span>
+              </div>
+              <div class="fleet-box-body">
+                <h4 class="fleet-box-title">Trailer #2: 6×12 Utility</h4>
+                <div class="fleet-box-specs">
+                  <span>&bull; Hardwood Deck Floor</span>
+                  <span>&bull; D-Rings Installed</span>
+                  <span>&bull; Spring-Assist Ramp</span>
+                </div>
+                <div class="fleet-box-select-btn" id="fleetBtn2">
+                  SELECT UNIT
+                </div>
               </div>
             </div>
+
           </div>
         </div>
+
       </div>
 
       <!-- RIGHT: 10-FIELD RESERVATION REQUEST FORM -->
@@ -718,7 +958,7 @@
             <div class="form-group">
               <label class="form-label" for="bookingDL">
                 <span>4. Driver's License Information *</span>
-                <span class="form-helper-badge"><i class="fa-solid fa-shield-check"></i> Verified securely at pickup</span>
+                <span class="form-helper-badge"><i class="fa-solid fa-shield-halved"></i> Verified securely at pickup</span>
               </label>
               <input type="text" id="bookingDL" class="form-input" placeholder="State &amp; Driver's License # (e.g. MS - S1234567)" required>
             </div>
@@ -734,10 +974,11 @@
               </div>
               <div class="form-group">
                 <label class="form-label" for="bookingPeriod">6. Rental Period *</label>
-                <select id="bookingPeriod" class="form-select" onchange="updateLivePricing()" required>
+                <select id="bookingPeriod" class="form-select" onchange="onPeriodDropdownChange(this.value)" required>
                   <option value="daily" selected>Daily Rental ($45 - 24 hrs)</option>
                   <option value="weekend">Weekend Special ($85 - Fri-Sun)</option>
                   <option value="3day">3-Day Rental ($115 - 72 hrs)</option>
+                  <option value="custom">Multi-Day Custom Range (Tiered Rate)</option>
                   <option value="weekly">Weekly Rental ($225 - 7 days)</option>
                   <option value="monthly">Monthly Rental ($550 - 30 days)</option>
                 </select>
@@ -748,11 +989,11 @@
             <div class="form-row-2">
               <div class="form-group">
                 <label class="form-label" for="pickupDateTime">7. Pickup Date and Time *</label>
-                <input type="datetime-local" id="pickupDateTime" class="form-input" required onchange="calculateDurationDates()">
+                <input type="datetime-local" id="pickupDateTime" class="form-input" required onchange="onManualDateInputChange()">
               </div>
               <div class="form-group">
                 <label class="form-label" for="returnDateTime">8. Return Date and Time *</label>
-                <input type="datetime-local" id="returnDateTime" class="form-input" required>
+                <input type="datetime-local" id="returnDateTime" class="form-input" required onchange="onManualDateInputChange()">
               </div>
             </div>
 
@@ -768,36 +1009,45 @@
               <textarea id="bookingComments" class="form-textarea" rows="3" placeholder="Tow vehicle make/model, hitch ball size (2&quot; standard), or special timing notes..."></textarea>
             </div>
 
-            <!-- Live Price Breakdown Summary Box (Separate Line Items) -->
+            <!-- Live Estimated Price Summary Card with Compound Breakdown -->
             <div class="price-breakdown-box">
               <div class="price-breakdown-title">
-                <i class="fa-solid fa-calculator text-red"></i> LIVE ESTIMATED PRICE SUMMARY
+                <span><i class="fa-solid fa-calculator text-red"></i> LIVE ESTIMATED PRICE SUMMARY</span>
+                <span id="summaryDurationBadge" style="font-size: 0.78rem; color: var(--red-primary);">1 DAY</span>
               </div>
               <div class="price-line-item">
                 <span>Selected Unit:</span>
                 <strong id="summaryTrailerName">Trailer #1: 6x12 Utility Trailer</strong>
               </div>
               <div class="price-line-item">
-                <span>1. Rental Payment (<span id="summaryPeriodLabel">Daily - 24 hrs</span>):</span>
+                <div>
+                  <span>1. Rental Payment (<span id="summaryPeriodLabel">Daily - 24 hrs</span>):</span>
+                  <span class="calc-subtext" id="summaryFormulaText">1 Day @ $45.00/day</span>
+                </div>
                 <strong id="summaryRentalFee">$45.00</strong>
               </div>
               <div class="price-line-item">
-                <span>2. Refundable Security Deposit:</span>
+                <div>
+                  <span>2. Refundable Security Deposit:</span>
+                  <span class="calc-subtext">Refunded immediately after post-rental inspection</span>
+                </div>
                 <strong id="summaryDepositFee">$100.00</strong>
               </div>
               <div class="price-line-item total-line">
                 <span>Estimated Total (Before Taxes):</span>
                 <span id="summaryTotalEstimated" class="price-val">$145.00</span>
               </div>
-              <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.6rem;">
-                * The security deposit is separate from the rental charge and is refunded after inspection.
+              <p style="font-size: 0.76rem; color: var(--text-muted); margin-top: 0.65rem;">
+                * The security deposit is held separately from rental payment and refunded in full upon return inspection.
               </p>
             </div>
 
+            <!-- Submit Button -->
             <button type="submit" class="btn-submit-booking" id="btnSubmit">
               <i class="fa-solid fa-paper-plane"></i> SUBMIT BOOKING REQUEST &bull; AUTHORIZE
             </button>
 
+            <!-- Feedback Alert Message -->
             <div class="alert-msg" id="alertMsg"></div>
 
           </form>
@@ -807,33 +1057,62 @@
     </div>
   </div>
 
+  <!-- ==========================================================================
+       JAVASCRIPT: MULTI-DAY RANGE PICKER & COMPOUND TIERED PRICING LOGIC
+       ========================================================================== -->
   <script>
-    // Rates & deposits configuration
-    const PRICING = {
-      daily: { rate: 45, deposit: 100, hours: 24, label: 'Daily - 24 hrs' },
-      weekend: { rate: 85, deposit: 100, hours: 72, label: 'Weekend - Fri-Sun' },
-      '3day': { rate: 115, deposit: 100, hours: 72, label: '3-Day - 72 hrs' },
-      weekly: { rate: 225, deposit: 150, hours: 168, label: 'Weekly - 7 days' },
-      monthly: { rate: 550, deposit: 200, hours: 720, label: 'Monthly - 30 days' }
+    // Official L&D Trailers Rental Rates & Deposits
+    const RATES = {
+      daily: 45.00,       // $45 / 24 hrs
+      weekend: 85.00,     // $85 Fri 8AM - Sun 5PM / Mon 8AM
+      threeDay: 115.00,   // $115 / 72 hrs
+      weekly: 225.00,     // $225 / 7 days
+      monthly: 550.00,    // $550 / 30 days
+      depositStandard: 100.00,
+      depositWeekly: 150.00,
+      depositMonthly: 200.00
     };
 
-    // Calendar state
-    let calendarCurrentDate = new Date(2026, 10, 1); // November 2026
-    let selectedBookingDate = '2026-11-24'; // Pre-selected Day 24 matching screenshot
+    // Calendar & Range State
+    let calendarMonth = new Date(2026, 10, 1); // Defaults to November 2026
+    let rangeStartDate = '2026-11-24';         // Start date (YYYY-MM-DD)
+    let rangeEndDate = '2026-11-25';           // End date (YYYY-MM-DD)
+    let isSelectingSecondDate = false;         // State flag for multi-click selection
+
+    // Trailer Selection State
+    let currentTrailerId = 'trailer-1';
+    let currentTrailerName = 'Trailer #1: 6x12 Utility Trailer';
+
+    // Blocked Dates Database (Accepts dynamic CMS updates via Wix Velo)
     let blockedDates = ['2026-11-20', '2026-11-21', '2026-11-22'];
+    let blockedDatesByTrailer = {
+      'trailer-1': ['2026-11-20', '2026-11-21', '2026-11-22', '2026-11-26', '2026-12-05', '2027-01-01'],
+      'trailer-2': ['2026-11-26', '2026-11-27', '2026-12-25']
+    };
 
+    // Initialize on DOM load
     document.addEventListener('DOMContentLoaded', () => {
+      initDefaultFormDates();
       renderCalendar();
-      initDefaultDates();
-      updateLivePricing();
+      updateCompoundPricing();
 
-      // Listen for CMS updates from Wix Velo
+      // Listen for CMS updates from Wix Studio Velo code
       window.addEventListener('message', (event) => {
-        if (event.data && event.data.type === 'WIX_CMS_DATA' && Array.isArray(event.data.blockedDates)) {
-          blockedDates = event.data.blockedDates;
+        if (!event.data) return;
+
+        // 1. Live Blocked Dates from CMS
+        if (event.data.type === 'WIX_CMS_DATA') {
+          if (Array.isArray(event.data.blockedDates)) {
+            blockedDates = event.data.blockedDates;
+          }
+          if (event.data.blockedByTrailer) {
+            blockedDatesByTrailer = event.data.blockedByTrailer;
+          }
           renderCalendar();
         }
-        if (event.data && event.data.type === 'BOOKING_SUBMITTED_SUCCESS') {
+
+        // 2. Submission confirmation from Velo
+        if (event.data.type === 'BOOKING_SUBMITTED_SUCCESS') {
           showAlert(event.data.message || 'Booking Request Submitted! Status: PENDING_APPROVAL.', 'success');
         }
       });
@@ -841,123 +1120,267 @@
 
     // Month Navigation
     function changeMonth(delta) {
-      calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() + delta);
+      calendarMonth.setMonth(calendarMonth.getMonth() + delta);
       renderCalendar();
     }
 
-    // Render Calendar
+    // Helper: Check if a date string is blocked for the currently active trailer
+    function isDateBlocked(dateStr) {
+      if (blockedDatesByTrailer[currentTrailerId] && blockedDatesByTrailer[currentTrailerId].includes(dateStr)) {
+        return true;
+      }
+      return blockedDates.includes(dateStr);
+    }
+
+    // Render the Calendar with Range Highlighting
     function renderCalendar() {
       const grid = document.getElementById('calendarDaysGrid');
       const label = document.getElementById('calendarMonthLabel');
       if (!grid || !label) return;
 
-      const year = calendarCurrentDate.getFullYear();
-      const month = calendarCurrentDate.getMonth();
+      const year = calendarMonth.getFullYear();
+      const month = calendarMonth.getMonth();
       const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
       label.textContent = `${monthNames[month]} ${year}`;
 
       grid.innerHTML = '';
 
       // Weekday Headers
-      const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-      dayNames.forEach(d => {
+      const dayLetters = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+      dayLetters.forEach(letter => {
         const h = document.createElement('div');
         h.className = 'calendar-day-header';
-        h.textContent = d;
+        h.textContent = letter;
         grid.appendChild(h);
       });
 
-      // Blank filler cells
+      // Leading blank cells
       const firstDayIndex = new Date(year, month, 1).getDay();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
 
       for (let i = 0; i < firstDayIndex; i++) {
         const blank = document.createElement('div');
         blank.className = 'calendar-cell';
-        blank.style.opacity = '0.15';
+        blank.style.opacity = '0.12';
         grid.appendChild(blank);
       }
 
-      // Render Day Cells
+      // Day cells
       for (let day = 1; day <= daysInMonth; day++) {
         const cell = document.createElement('div');
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         cell.className = 'calendar-cell';
         cell.textContent = day;
 
-        if (blockedDates.includes(dateStr)) {
+        const isBlocked = isDateBlocked(dateStr);
+
+        if (isBlocked) {
           cell.classList.add('booked');
-          cell.title = 'Reserved / Unavailable';
+          cell.title = 'Reserved / Maintenance';
         } else {
           cell.classList.add('available');
-          cell.title = 'Available - Click to Select Pickup Date';
+          cell.title = 'Available for reservation';
 
-          // Selected Day highlight (Day 24 solid red square)
-          if (selectedBookingDate === dateStr) {
+          // Range Highlighting Logic
+          const isStart = (dateStr === rangeStartDate);
+          const isEnd = (dateStr === rangeEndDate);
+          const inBetween = (rangeStartDate && rangeEndDate && dateStr > rangeStartDate && dateStr < rangeEndDate);
+
+          if (isStart && isEnd) {
             cell.classList.add('selected');
+          } else if (isStart) {
+            cell.classList.add('selected', 'range-start');
+          } else if (isEnd) {
+            cell.classList.add('selected', 'range-end');
+          } else if (inBetween) {
+            cell.classList.add('in-range');
           }
 
+          // Click handler for range selection
           cell.addEventListener('click', () => {
-            selectCalendarDate(dateStr);
+            handleCalendarDateClick(dateStr);
           });
         }
 
         grid.appendChild(cell);
       }
+
+      updateRangeStatusBar();
     }
 
-    // Date selection
-    function selectCalendarDate(dateStr) {
-      selectedBookingDate = dateStr;
+    // Handles user clicking any available date on calendar
+    function handleCalendarDateClick(clickedDate) {
+      if (isDateBlocked(clickedDate)) {
+        showAlert('This date is already booked or reserved.', 'error');
+        return;
+      }
+
+      if (!isSelectingSecondDate) {
+        // First click: Set Start Date
+        rangeStartDate = clickedDate;
+        rangeEndDate = null;
+        isSelectingSecondDate = true;
+        showAlert(`Pickup date set to ${formatFriendlyDate(clickedDate)}. Now click a return date.`, 'success');
+      } else {
+        // Second click: Set End Date
+        if (clickedDate < rangeStartDate) {
+          // If clicked date is earlier, make it the new start date
+          rangeStartDate = clickedDate;
+          rangeEndDate = null;
+          showAlert(`Pickup date changed to ${formatFriendlyDate(clickedDate)}. Click return date.`, 'success');
+        } else if (clickedDate === rangeStartDate) {
+          // Same date clicked -> 1 day rental
+          rangeEndDate = addDays(rangeStartDate, 1);
+          isSelectingSecondDate = false;
+        } else {
+          // Check if any date in between is blocked
+          if (isRangeBlocked(rangeStartDate, clickedDate)) {
+            showAlert('The selected range covers reserved dates. Please select consecutive available days.', 'error');
+            return;
+          }
+          rangeEndDate = clickedDate;
+          isSelectingSecondDate = false;
+        }
+      }
+
+      // If only start date selected, auto-set end date to +1 day for initial pricing calculation
+      if (!rangeEndDate) {
+        const tempEnd = addDays(rangeStartDate, 1);
+        syncInputsWithRange(rangeStartDate, tempEnd);
+      } else {
+        syncInputsWithRange(rangeStartDate, rangeEndDate);
+      }
+
       renderCalendar();
+      updateCompoundPricing();
+    }
 
-      const pickupInput = document.getElementById('pickupDateTime');
-      if (pickupInput) {
-        pickupInput.value = `${dateStr}T08:00`;
-        calculateDurationDates();
+    // Check if any date inside the range is booked
+    function isRangeBlocked(startStr, endStr) {
+      const cur = new Date(startStr + 'T00:00:00');
+      const end = new Date(endStr + 'T00:00:00');
+      while (cur <= end) {
+        const y = cur.getFullYear();
+        const m = String(cur.getMonth() + 1).padStart(2, '0');
+        const d = String(cur.getDate()).padStart(2, '0');
+        const checkStr = `${y}-${m}-${d}`;
+        if (isDateBlocked(checkStr)) {
+          return true;
+        }
+        cur.setDate(cur.getDate() + 1);
+      }
+      return false;
+    }
+
+    // Format YYYY-MM-DD into "Nov 24, 2026"
+    function formatFriendlyDate(dateStr) {
+      if (!dateStr) return '';
+      const parts = dateStr.split('-');
+      if (parts.length < 3) return dateStr;
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return `${months[parseInt(parts[1], 10) - 1]} ${parseInt(parts[2], 10)}, ${parts[0]}`;
+    }
+
+    // Add days to YYYY-MM-DD
+    function addDays(dateStr, numDays) {
+      const d = new Date(dateStr + 'T00:00:00');
+      d.setDate(d.getDate() + numDays);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+
+    // Update Status Bar Banner
+    function updateRangeStatusBar() {
+      const textEl = document.getElementById('rangeStatusText');
+      const pillEl = document.getElementById('rangeDaysPill');
+      if (!textEl || !pillEl) return;
+
+      const pInput = document.getElementById('pickupDateTime').value;
+      const rInput = document.getElementById('returnDateTime').value;
+
+      if (!pInput || !rInput) {
+        textEl.innerHTML = 'Select your pickup date on the calendar above.';
+        pillEl.textContent = 'SELECT DATE';
+        return;
+      }
+
+      const pDate = new Date(pInput);
+      const rDate = new Date(rInput);
+      const diffHours = (rDate - pDate) / (1000 * 60 * 60);
+      const days = Math.max(1, Math.ceil(diffHours / 24));
+
+      const pStr = formatFriendlyDate(pInput.substring(0, 10));
+      const rStr = formatFriendlyDate(rInput.substring(0, 10));
+
+      textEl.innerHTML = `Pickup: <strong>${pStr}</strong> &rarr; Return: <strong>${rStr}</strong>`;
+      pillEl.textContent = `${days} DAY${days > 1 ? 'S' : ''} (${Math.round(diffHours)}H)`;
+    }
+
+    // Sync input fields with selected range
+    function syncInputsWithRange(startStr, endStr) {
+      const pInput = document.getElementById('pickupDateTime');
+      const rInput = document.getElementById('returnDateTime');
+      if (!pInput || !rInput) return;
+
+      const currentStartTime = pInput.value.includes('T') ? pInput.value.split('T')[1] : '08:00';
+      const currentEndTime = rInput.value.includes('T') ? rInput.value.split('T')[1] : '08:00';
+
+      pInput.value = `${startStr}T${currentStartTime}`;
+      rInput.value = `${endStr}T${currentEndTime}`;
+    }
+
+    // Manual change on Pickup / Return datetime inputs
+    function onManualDateInputChange() {
+      const pInput = document.getElementById('pickupDateTime').value;
+      const rInput = document.getElementById('returnDateTime').value;
+      if (!pInput || !rInput) return;
+
+      rangeStartDate = pInput.substring(0, 10);
+      rangeEndDate = rInput.substring(0, 10);
+      isSelectingSecondDate = false;
+
+      renderCalendar();
+      updateCompoundPricing();
+    }
+
+    // Pre-fill initial dates matching user screenshot
+    function initDefaultFormDates() {
+      const pInput = document.getElementById('pickupDateTime');
+      const rInput = document.getElementById('returnDateTime');
+      if (pInput && rInput) {
+        pInput.value = '2026-11-24T08:00';
+        rInput.value = '2026-11-25T08:00';
       }
     }
 
-    // Auto set Return Date
-    function calculateDurationDates() {
-      const pickupInput = document.getElementById('pickupDateTime');
-      const returnInput = document.getElementById('returnDateTime');
-      const periodSelect = document.getElementById('bookingPeriod');
-      if (!pickupInput || !returnInput || !periodSelect) return;
-
-      const pickupVal = pickupInput.value;
-      if (!pickupVal) return;
-
-      const tierKey = periodSelect.value || 'daily';
-      const hoursToAdd = PRICING[tierKey].hours;
-
-      const pDate = new Date(pickupVal);
-      pDate.setHours(pDate.getHours() + hoursToAdd);
-
-      const yr = pDate.getFullYear();
-      const mo = String(pDate.getMonth() + 1).padStart(2, '0');
-      const da = String(pDate.getDate()).padStart(2, '0');
-      const hr = String(pDate.getHours()).padStart(2, '0');
-      const mi = String(pDate.getMinutes()).padStart(2, '0');
-
-      returnInput.value = `${yr}-${mo}-${da}T${hr}:${mi}`;
-    }
-
-    // Initial dates setup (Pre-fills Day 24 matching screenshot)
-    function initDefaultDates() {
-      const pickupInput = document.getElementById('pickupDateTime');
-      if (pickupInput) {
-        pickupInput.value = '2026-11-24T08:00';
-        calculateDurationDates();
-      }
-    }
-
-    // Fleet selection
+    // Fleet Box Selection handler
     function selectFleetTrailer(trailerId, trailerName) {
-      document.getElementById('fleetRow1').classList.toggle('active', trailerId === 'trailer-1');
-      document.getElementById('fleetRow2').classList.toggle('active', trailerId === 'trailer-2');
+      currentTrailerId = trailerId;
+      currentTrailerName = trailerName;
+
+      // Update Box Card Active States
+      document.getElementById('fleetBox1').classList.toggle('active', trailerId === 'trailer-1');
+      document.getElementById('fleetBox2').classList.toggle('active', trailerId === 'trailer-2');
+
+      // Update Button Text
+      const btn1 = document.getElementById('fleetBtn1');
+      const btn2 = document.getElementById('fleetBtn2');
+      if (trailerId === 'trailer-1') {
+        btn1.innerHTML = '<i class="fa-solid fa-check"></i> SELECTED UNIT';
+        btn2.innerHTML = 'SELECT UNIT';
+      } else {
+        btn1.innerHTML = 'SELECT UNIT';
+        btn2.innerHTML = '<i class="fa-solid fa-check"></i> SELECTED UNIT';
+      }
+
+      // Sync form select & summary label
       document.getElementById('bookingTrailer').value = trailerId;
       document.getElementById('summaryTrailerName').textContent = trailerName;
+
+      // Re-render calendar to reflect trailer-specific blocked dates
+      renderCalendar();
     }
 
     function onTrailerSelectChange(trailerId) {
@@ -965,40 +1388,212 @@
       selectFleetTrailer(trailerId, name);
     }
 
-    // Live Price Update
-    function updateLivePricing() {
-      const period = document.getElementById('bookingPeriod').value || 'daily';
-      const tier = PRICING[period];
+    // Rental Period dropdown preset change
+    function onPeriodDropdownChange(periodKey) {
+      const pInput = document.getElementById('pickupDateTime');
+      const rInput = document.getElementById('returnDateTime');
+      if (!pInput || !rInput || !pInput.value) return;
 
-      document.getElementById('summaryPeriodLabel').textContent = tier.label;
-      document.getElementById('summaryRentalFee').textContent = `$${tier.rate.toFixed(2)}`;
-      document.getElementById('summaryDepositFee').textContent = `$${tier.deposit.toFixed(2)}`;
+      const pDate = new Date(pInput.value);
+      let addHours = 24;
 
-      const total = tier.rate + tier.deposit;
-      document.getElementById('summaryTotalEstimated').textContent = `$${total.toFixed(2)}`;
+      if (periodKey === 'daily') addHours = 24;
+      else if (periodKey === 'weekend') addHours = 48;
+      else if (periodKey === '3day') addHours = 72;
+      else if (periodKey === 'weekly') addHours = 168; // 7 days
+      else if (periodKey === 'monthly') addHours = 720; // 30 days
+      else if (periodKey === 'custom') return; // Do not overwrite user custom range
 
-      calculateDurationDates();
+      pDate.setHours(pDate.getHours() + addHours);
+      
+      const y = pDate.getFullYear();
+      const m = String(pDate.getMonth() + 1).padStart(2, '0');
+      const d = String(pDate.getDate()).padStart(2, '0');
+      const hr = String(pDate.getHours()).padStart(2, '0');
+      const mi = String(pDate.getMinutes()).padStart(2, '0');
+
+      rInput.value = `${y}-${m}-${d}T${hr}:${mi}`;
+      rangeStartDate = pInput.value.substring(0, 10);
+      rangeEndDate = `${y}-${m}-${d}`;
+      isSelectingSecondDate = false;
+
+      renderCalendar();
+      updateCompoundPricing();
     }
 
-    // Toggle Blocked Dates Demo
+    // ==========================================================================
+    // DYNAMIC COMPOUND TIERED PRICING CALCULATION
+    // Example: 4 days = 3-Day tier ($115.00) + 1 extra daily rate ($45.00) = $160.00
+    // ==========================================================================
+    function calculateCompoundPricing(days, startDateObj) {
+      let rentalFee = 0;
+      let depositFee = RATES.depositStandard;
+      let label = '';
+      let formulaText = '';
+
+      if (days <= 1) {
+        rentalFee = RATES.daily;
+        depositFee = RATES.depositStandard;
+        label = 'Daily Rental (24 hrs)';
+        formulaText = '1 Day @ $45.00/day';
+      } else if (days === 2) {
+        // Check if rental starts on Friday (Weekend rate $85 vs 2 x $45 = $90)
+        const isFriday = startDateObj ? startDateObj.getDay() === 5 : false;
+        if (isFriday) {
+          rentalFee = RATES.weekend;
+          depositFee = RATES.depositStandard;
+          label = 'Weekend Special (Fri - Sun)';
+          formulaText = 'Weekend Special Rate ($85.00 flat)';
+        } else {
+          rentalFee = RATES.daily * 2;
+          depositFee = RATES.depositStandard;
+          label = '2-Day Rental (48 hrs)';
+          formulaText = '2 Days @ $45.00/day ($90.00)';
+        }
+      } else if (days === 3) {
+        rentalFee = RATES.threeDay;
+        depositFee = RATES.depositStandard;
+        label = '3-Day Rental Package (72 hrs)';
+        formulaText = '3-Day Discount Package ($115.00 flat)';
+      } else if (days >= 4 && days <= 5) {
+        // 4 or 5 Days: 3-Day Package ($115) + Remaining Days @ $45/day
+        const extraDays = days - 3;
+        const extraCost = extraDays * RATES.daily;
+        rentalFee = RATES.threeDay + extraCost;
+        depositFee = RATES.depositStandard;
+        label = `${days}-Day Multi-Day Rental`;
+        formulaText = `3-Day Package ($115.00) + ${extraDays} Extra Day${extraDays > 1 ? 's' : ''} @ $45/day ($${extraCost.toFixed(2)})`;
+      } else if (days === 6) {
+        // Best Value discount: 6 days automatically upgraded to Weekly Rate ($225 < $115 + $135)
+        rentalFee = RATES.weekly;
+        depositFee = RATES.depositWeekly;
+        label = '6-Day Rental (Weekly Rate Applied)';
+        formulaText = 'Best Value: 7-Day Weekly Rate Discount Applied ($225.00)';
+      } else if (days === 7) {
+        rentalFee = RATES.weekly;
+        depositFee = RATES.depositWeekly;
+        label = 'Weekly Rental (7 Days)';
+        formulaText = 'Weekly Rental Rate ($225.00 flat)';
+      } else if (days > 7 && days < 14) {
+        // 8 - 13 Days: 1 Week ($225) + remaining daily / 3-day combinations
+        const extraDays = days - 7;
+        let extraCost = 0;
+        let extraDesc = '';
+        if (extraDays >= 3) {
+          const remainder = extraDays - 3;
+          extraCost = RATES.threeDay + (remainder * RATES.daily);
+          extraDesc = `3-Day Tier ($115.00)${remainder > 0 ? ` + ${remainder} Day(s) ($${remainder * 45})` : ''}`;
+        } else {
+          extraCost = extraDays * RATES.daily;
+          extraDesc = `${extraDays} Extra Day${extraDays > 1 ? 's' : ''} @ $45/day ($${extraCost.toFixed(2)})`;
+        }
+        
+        // Cap at 2 full weeks ($450)
+        if (RATES.weekly + extraCost > 450) {
+          rentalFee = 450;
+          formulaText = '2 Full Weeks Package ($450.00)';
+        } else {
+          rentalFee = RATES.weekly + extraCost;
+          formulaText = `1 Week ($225.00) + ${extraDesc}`;
+        }
+        depositFee = RATES.depositWeekly;
+        label = `${days}-Day Extended Rental`;
+      } else if (days >= 14 && days < 30) {
+        // 2 - 4 Weeks
+        const fullWeeks = Math.floor(days / 7);
+        const remDays = days % 7;
+        let extraCost = remDays * RATES.daily;
+        if (remDays >= 3) {
+          const remAfter3 = remDays - 3;
+          extraCost = Math.min(RATES.threeDay + (remAfter3 * RATES.daily), RATES.weekly);
+        }
+        rentalFee = Math.min((fullWeeks * RATES.weekly) + extraCost, RATES.monthly);
+        depositFee = days >= 21 ? RATES.depositMonthly : RATES.depositWeekly;
+        label = `${days}-Day Multi-Week Rental`;
+        formulaText = `${fullWeeks} Week(s) ($${(fullWeeks * RATES.weekly).toFixed(2)})${remDays > 0 ? ` + ${remDays} Extra Day(s)` : ''}`;
+      } else if (days >= 30) {
+        // 30+ Days (Monthly)
+        const months = Math.floor(days / 30);
+        const remDays = days % 30;
+        rentalFee = (months * RATES.monthly) + (remDays * 20); // Discounted commercial daily extension
+        depositFee = RATES.depositMonthly;
+        label = `${days}-Day Monthly Commercial Rental`;
+        formulaText = `${months} Month(s) ($${(months * RATES.monthly).toFixed(2)})${remDays > 0 ? ` + ${remDays} Day(s) @ $20/day` : ''}`;
+      }
+
+      return {
+        rentalFee,
+        depositFee,
+        total: rentalFee + depositFee,
+        label,
+        formulaText
+      };
+    }
+
+    // Update Live Price Breakdown Card
+    function updateCompoundPricing() {
+      const pInput = document.getElementById('pickupDateTime').value;
+      const rInput = document.getElementById('returnDateTime').value;
+      if (!pInput || !rInput) return;
+
+      const pDate = new Date(pInput);
+      const rDate = new Date(rInput);
+      const diffHours = (rDate - pDate) / (1000 * 60 * 60);
+      const numDays = Math.max(1, Math.ceil(diffHours / 24));
+
+      const pricing = calculateCompoundPricing(numDays, pDate);
+
+      // Update Summary Fields
+      document.getElementById('summaryDurationBadge').textContent = `${numDays} DAY${numDays > 1 ? 'S' : ''}`;
+      document.getElementById('summaryPeriodLabel').textContent = pricing.label;
+      document.getElementById('summaryFormulaText').textContent = pricing.formulaText;
+      document.getElementById('summaryRentalFee').textContent = `$${pricing.rentalFee.toFixed(2)}`;
+      document.getElementById('summaryDepositFee').textContent = `$${pricing.depositFee.toFixed(2)}`;
+      document.getElementById('summaryTotalEstimated').textContent = `$${pricing.total.toFixed(2)}`;
+
+      // Sync Rental Period dropdown selection
+      const periodSelect = document.getElementById('bookingPeriod');
+      if (numDays === 1) periodSelect.value = 'daily';
+      else if (numDays === 2) periodSelect.value = 'weekend';
+      else if (numDays === 3) periodSelect.value = '3day';
+      else if (numDays === 7) periodSelect.value = 'weekly';
+      else if (numDays === 30) periodSelect.value = 'monthly';
+      else periodSelect.value = 'custom';
+
+      updateRangeStatusBar();
+    }
+
+    // Toggle Blocked Dates Demonstration Mode
     function toggleBlockedDemo() {
       if (blockedDates.length > 0) {
         blockedDates = [];
+        blockedDatesByTrailer['trailer-1'] = [];
+        blockedDatesByTrailer['trailer-2'] = [];
+        showAlert('Owner Mode: All calendar dates unlocked.', 'success');
       } else {
         blockedDates = ['2026-11-20', '2026-11-21', '2026-11-22'];
+        blockedDatesByTrailer['trailer-1'] = ['2026-11-20', '2026-11-21', '2026-11-22', '2026-11-26', '2026-12-05', '2027-01-01'];
+        blockedDatesByTrailer['trailer-2'] = ['2026-11-26', '2026-11-27', '2026-12-25'];
+        showAlert('Owner Mode: Standard blocked dates restored.', 'success');
       }
       renderCalendar();
     }
 
-    // Form submission
+    // Booking Submission Dispatcher
     function handleBookingSubmit(e) {
       e.preventDefault();
       const btn = document.getElementById('btnSubmit');
       btn.disabled = true;
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SUBMITTING REQUEST...';
 
-      const period = document.getElementById('bookingPeriod').value;
-      const tier = PRICING[period];
+      const pInput = document.getElementById('pickupDateTime').value;
+      const rInput = document.getElementById('returnDateTime').value;
+      const pDate = new Date(pInput);
+      const rDate = new Date(rInput);
+      const diffHours = (rDate - pDate) / (1000 * 60 * 60);
+      const numDays = Math.max(1, Math.ceil(diffHours / 24));
+
+      const pricing = calculateCompoundPricing(numDays, pDate);
       const trailerId = document.getElementById('bookingTrailer').value;
       const trailerName = trailerId === 'trailer-1' ? 'Trailer #1: 6x12 Utility Trailer' : 'Trailer #2: 6x12 Utility Trailer';
 
@@ -1010,17 +1605,18 @@
         driverLicense: document.getElementById('bookingDL').value.trim(),
         trailerId: trailerId,
         trailerName: trailerName,
-        rentalTier: period,
-        pickupDateTime: document.getElementById('pickupDateTime').value,
-        returnDateTime: document.getElementById('returnDateTime').value,
+        rentalTier: document.getElementById('bookingPeriod').value,
+        pickupDateTime: pInput,
+        returnDateTime: rInput,
+        rentalDays: numDays,
+        rentalFee: pricing.rentalFee,
+        securityDeposit: pricing.depositFee,
+        totalHold: pricing.total,
         intendedUse: document.getElementById('bookingUse').value.trim(),
-        comments: document.getElementById('bookingComments').value.trim(),
-        rentalFee: tier.rate,
-        securityDeposit: tier.deposit,
-        totalHold: tier.rate + tier.deposit
+        comments: document.getElementById('bookingComments').value.trim()
       };
 
-      // Dispatch to Wix Studio Parent Velo Code
+      // Dispatch payload to parent Wix Studio Velo code
       window.parent.postMessage({
         type: 'SUBMIT_WIX_BOOKING',
         payload: payload
@@ -1033,8 +1629,10 @@
 
     function showAlert(msg, type) {
       const box = document.getElementById('alertMsg');
+      if (!box) return;
       box.className = `alert-msg ${type}`;
       box.textContent = msg;
+      box.style.display = 'block';
     }
   </script>
 </body>

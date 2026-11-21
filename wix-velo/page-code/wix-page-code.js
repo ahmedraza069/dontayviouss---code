@@ -11,28 +11,49 @@ import wixPay from 'wix-pay';
 $w.onReady(async function () {
   const embedElement = $w('#htmlEmbed') || $w('#html1');
 
+  // Helper function: Convert any date representation to YYYY-MM-DD without timezone shifts
+  function formatYMD(dateVal) {
+    if (!dateVal) return null;
+    const d = new Date(dateVal);
+    if (isNaN(d.getTime())) return null;
+    const yr = d.getFullYear();
+    const mo = String(d.getMonth() + 1).padStart(2, '0');
+    const da = String(d.getDate()).padStart(2, '0');
+    return `${yr}-${mo}-${da}`;
+  }
+
   // 1. Fetch Blocked Dates from Wix CMS 'BlockedDates' Collection
   try {
     const blockedQuery = await wixData.query('BlockedDates').find();
     const blockedDatesArray = [];
+    const blockedByTrailer = {
+      'trailer-1': [],
+      'trailer-2': []
+    };
 
     blockedQuery.items.forEach(item => {
-      // Handles both DateString text and StartDate Date object safely
-      if (item.dateString) {
-        blockedDatesArray.push(String(item.dateString).substring(0, 10));
-      } else if (item.DateString) {
-        const d = new Date(item.DateString);
-        blockedDatesArray.push(d.toISOString().substring(0, 10));
-      } else if (item.startDate) {
-        const d = new Date(item.startDate);
-        blockedDatesArray.push(d.toISOString().substring(0, 10));
+      // Safely parse date from DateString, StartDate, or dateString
+      const rawDate = item.DateString || item.dateString || item.StartDate || item.startDate;
+      const ymd = formatYMD(rawDate);
+
+      if (ymd) {
+        blockedDatesArray.push(ymd);
+
+        // Check if blocked date is specific to Trailer #1 or Trailer #2 or Both
+        const trailerField = JSON.stringify(item.trailerName || item.TrailerName || item['Trailer Name'] || item.TrailerID || item.trailerId || '');
+        const appliesTo1 = trailerField.includes('Trailer #1') || trailerField.includes('trailer-1') || trailerField.length === 0;
+        const appliesTo2 = trailerField.includes('Trailer #2') || trailerField.includes('trailer-2') || trailerField.length === 0;
+
+        if (appliesTo1) blockedByTrailer['trailer-1'].push(ymd);
+        if (appliesTo2) blockedByTrailer['trailer-2'].push(ymd);
       }
     });
 
-    // Send live CMS blocked dates into the HTML Embed
+    // Send live CMS blocked dates into the HTML Embed component
     embedElement.postMessage({
       type: 'WIX_CMS_DATA',
-      blockedDates: blockedDatesArray
+      blockedDates: blockedDatesArray,
+      blockedByTrailer: blockedByTrailer
     });
   } catch (err) {
     console.warn('Could not fetch BlockedDates from CMS:', err);
@@ -44,7 +65,7 @@ $w.onReady(async function () {
       const data = event.data.payload;
 
       try {
-        // Find matching trailer in 'Trailers' collection for Multi-Reference / Reference linking
+        // Find matching trailer in 'Trailers' collection for Reference linking
         let trailerRefId = null;
         try {
           const trailerQuery = await wixData.query('Trailers')
@@ -75,6 +96,8 @@ $w.onReady(async function () {
           trailerId: data.trailerId,
           RentalTier: data.rentalTier,
           rentalTier: data.rentalTier,
+          RentalDays: Number(data.rentalDays || 1),
+          rentalDays: Number(data.rentalDays || 1),
           PickupDateTime: new Date(data.pickupDateTime),
           pickupDateTime: new Date(data.pickupDateTime),
           ReturnDateTime: new Date(data.returnDateTime),
