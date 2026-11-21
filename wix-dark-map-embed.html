@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L&D Trailers - Corinth MS Dark Map Embed</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: #0A0A0C;
+      overflow: hidden;
+    }
+    .dark-map-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background-color: #0A0A0C;
+      border: 1px solid #2E323B;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .dark-map-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      /* EXACT DARK THEME COLOR MATCHING SCREENSHOT */
+      filter: invert(90%) hue-rotate(180deg) contrast(1.15) brightness(0.95);
+      -webkit-filter: invert(90%) hue-rotate(180deg) contrast(1.15) brightness(0.95);
+    }
+  </style>
+</head>
+<body>
+  <div class="dark-map-container">
+    <iframe 
+      title="Google Map of Corinth, Mississippi"
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d105213.6845353112!2d-88.58376541604771!3d34.93430263628794!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x887deca16b17a1c9%3A0xe54be071759600d8!2sCorinth%2C%20MS%2038834!5e0!3m2!1sen!2sus!4v1716300000000!5m2!1sen!2sus" 
+      allowfullscreen="" 
+      loading="lazy" 
+      referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+  </div>
+</body>
+</html>
