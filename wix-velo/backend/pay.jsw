@@ -1,37 +1,77 @@
 // =============================================================================
 // WIX VELO BACKEND MODULE: pay.jsw
+// Location in Wix Studio: Code (sidebar) -> Backend Files -> pay.jsw
 // L&D Trailers - Corinth, Mississippi
-// Online Payments with Separate Rental Charge & Refundable Security Deposit
+// Secure Online Payments (Rental Fee + Refundable Security Deposit)
 // =============================================================================
 
 import wixPayBackend from 'wix-pay-backend';
 
 /**
- * Creates a Wix Pay order separating the Rental Payment and Refundable Security Deposit
- * into two explicit line items before taxes
+ * Creates a secure Wix Pay order with two clear line items:
+ * 1. Rental Charge (based on selected period / days)
+ * 2. Refundable Security Deposit
  */
-export async function createPaymentOrder(bookingNumber, trailerName, periodLabel, rentalFee, securityDeposit) {
+export async function createPaymentOrder(bookingData, trailerName, periodLabel, rentalFee, securityDeposit) {
+  // Support both object payload and positional arguments
+  let bookingNumber, tTitle, pLabel, fee, deposit, custName, custEmail, custPhone;
+
+  if (typeof bookingData === 'object' && bookingData !== null) {
+    bookingNumber = bookingData.bookingId || ('LD-' + Math.floor(1000 + Math.random() * 9000));
+    tTitle = bookingData.trailerNames 
+      ? (Array.isArray(bookingData.trailerNames) ? bookingData.trailerNames.join(' + ') : bookingData.trailerNames) 
+      : (bookingData.trailerName || 'Utility Trailer');
+    pLabel = bookingData.rentalTier || 'Rental';
+    fee = Number(bookingData.rentalFee || 0);
+    deposit = Number(bookingData.securityDeposit || 0);
+    custName = bookingData.customerName || '';
+    custEmail = bookingData.email || '';
+    custPhone = bookingData.phone || '';
+  } else {
+    bookingNumber = bookingData;
+    tTitle = trailerName || 'Utility Trailer';
+    pLabel = periodLabel || 'Rental';
+    fee = Number(rentalFee || 0);
+    deposit = Number(securityDeposit || 0);
+    custName = '';
+    custEmail = '';
+    custPhone = '';
+  }
+
   const lineItems = [
     {
-      name: `Trailer Rental Fee - ${trailerName} (${periodLabel})`,
-      price: Number(rentalFee),
+      name: `Trailer Rental - ${tTitle} (${pLabel})`,
+      price: fee,
       quantity: 1,
       description: 'L&D Trailers utility trailer rental charge in Corinth, MS'
     },
     {
       name: 'Refundable Security Deposit',
-      price: Number(securityDeposit),
+      price: deposit,
       quantity: 1,
-      description: 'Separate refundable deposit returned after inspection'
+      description: 'Separate refundable deposit returned after post-rental return inspection'
     }
   ];
 
+  const totalHold = fee + deposit;
+
   const paymentInfo = {
     items: lineItems,
-    amount: Number(rentalFee) + Number(securityDeposit),
+    amount: totalHold,
     currency: 'USD',
     note: `L&D Trailers Reservation #${bookingNumber}`
   };
+
+  // Pre-fill user info for fast Wix Checkout if available
+  if (custEmail || custName || custPhone) {
+    const nameParts = custName.trim().split(' ');
+    paymentInfo.userInfo = {
+      firstName: nameParts[0] || 'Valued',
+      lastName: nameParts.slice(1).join(' ') || 'Customer',
+      email: custEmail || undefined,
+      phone: custPhone || undefined
+    };
+  }
 
   try {
     const payment = await wixPayBackend.createPayment(paymentInfo);

@@ -37,47 +37,27 @@ export async function createBookingRequest(bookingData) {
     }
 
     const bookingItem = {
-      // Direct match with your Wix CMS columns shown in screenshot
-      BookingID: bookingNumber,
       title: bookingNumber,
-      CustomerName: bookingData.customerName,
-      customerName: bookingData.customerName,
-      Phone: bookingData.phone,
-      phone: bookingData.phone,
-      Email: bookingData.email,
-      email: bookingData.email,
-      DriverLicense: bookingData.driverLicense,
-      driverLicense: bookingData.driverLicense,
-      TrailerID: bookingData.trailerId,
-      trailerId: bookingData.trailerId,
-      RentalTier: bookingData.rentalTier || bookingData.period,
-      rentalTier: bookingData.rentalTier || bookingData.period,
+      BookingID: bookingNumber,
+      CustomerName: String(bookingData.customerName || '').trim(),
+      Phone: String(bookingData.phone || '').trim(),
+      Email: String(bookingData.email || '').trim(),
+      DriverLicense: String(bookingData.driverLicense || '').trim(),
+      TrailerID: bookingData.trailerId || '',
+      TrailerName: trailerRefId || bookingData.trailerName || '',
+      RentalTier: bookingData.rentalTier || bookingData.period || 'daily',
+      RentalDays: Number(bookingData.rentalDays || 1),
       PickupDateTime: new Date(bookingData.pickupDateTime),
-      pickupDateTime: new Date(bookingData.pickupDateTime),
       ReturnDateTime: new Date(bookingData.returnDateTime),
-      returnDateTime: new Date(bookingData.returnDateTime),
       RentalFee: Number(tier.rate),
-      rentalFee: Number(tier.rate),
       SecurityDepositAmount: Number(tier.deposit),
-      securityDepositAmount: Number(tier.deposit),
       TotalCharged: Number(tier.rate + tier.deposit),
-      totalCharged: Number(tier.rate + tier.deposit),
       DepositStatus: 'Pending',
-      depositStatus: 'Pending',
       BookingStatus: 'PENDING_APPROVAL',
-      status: 'PENDING_APPROVAL',
-      IntendedUse: bookingData.intendedUse || '',
-      intendedUse: bookingData.intendedUse || '',
-      Notes: bookingData.comments || bookingData.additionalComments || '',
-      additionalComments: bookingData.comments || bookingData.additionalComments || '',
+      IntendedUse: String(bookingData.intendedUse || '').trim(),
+      Notes: String(bookingData.comments || bookingData.additionalComments || '').trim(),
       ReturnInspectionPassed: false
     };
-
-    // Attach Reference if found
-    if (trailerRefId) {
-      bookingItem['trailerName'] = trailerRefId;
-      bookingItem['TrailerName'] = trailerRefId;
-    }
 
     const savedBooking = await wixData.insert('Bookings', bookingItem);
 
