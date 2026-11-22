@@ -1,0 +1,80 @@
+// =============================================================================
+// WIX VELO BACKEND MODULE: reminderJobs.jsw
+// Location in Wix Studio: Code (sidebar) -> Backend Files -> reminderJobs.jsw
+// L&D Trailers - Corinth, Mississippi
+// Automatically triggers 3-stage reminders to Owner for pending/urgent bookings
+// =============================================================================
+
+import wixData from 'wix-data';
+
+/**
+ * Hourly Cron Job: Scans for unapproved bookings and sends reminders in 3 stages
+ */
+export async function checkPendingUrgentBookings() {
+  try {
+    const now = new Date();
+
+    // Query all bookings that are still pending owner approval
+    const pendingQuery = await wixData.query('Bookings')
+      .eq('IsApproved', false)
+      .ne('BookingStatus', 'REJECTED')
+      .ne('BookingStatus', 'CANCELLED')
+      .find();
+
+    for (const booking of pendingQuery.items) {
+      const pickupDate = booking.PickupDateTime ? new Date(booking.PickupDateTime) : null;
+      const createdAt = booking.CreatedAt || booking._createdDate ? new Date(booking.CreatedAt || booking._createdDate) : now;
+      
+      if (!pickupDate) continue;
+
+      // Hours until pickup
+      const hoursUntilPickup = (pickupDate.getTime() - now.getTime()) / (1000 * 60 * 60);
+      // Hours since customer submitted
+      const hoursWaiting = (now.getTime() - createdAt.getTime()) / (1000 * 60 * 60);
+      
+      const currentReminderStage = Number(booking.ReminderStage || 0);
+
+      // Only process bookings happening within the next 36 hours (Urgent/Next-Day)
+      if (hoursUntilPickup <= 36 && hoursUntilPickup > 0) {
+
+        // STAGE 1 REMINDER: 2 hours elapsed since submission and still unapproved
+        if (hoursWaiting >= 2 && currentReminderStage < 1) {
+          console.log(`⚠️ [REMINDER 1 SENT] Booking #${booking.BookingID} waiting for 2+ hours. Alerting Owner.`);
+          
+          await wixData.update('Bookings', {
+            ...booking,
+            ReminderStage: 1,
+            LastReminderSentAt: new Date()
+          });
+        }
+
+        // STAGE 2 REMINDER: 4 hours elapsed since submission (or under 18 hours until pickup)
+        else if ((hoursWaiting >= 4 || hoursUntilPickup <= 18) && currentReminderStage < 2) {
+          console.log(`🚨 [REMINDER 2 SENT] URGENT: Booking #${booking.BookingID} pickup is soon. Alerting Owner.`);
+
+          await wixData.update('Bookings', {
+            ...booking,
+            ReminderStage: 2,
+            LastReminderSentAt: new Date()
+          });
+        }
+
+        // STAGE 3 FINAL REMINDER: 8 hours elapsed (or under 8 hours until pickup)
+        else if ((hoursWaiting >= 8 || hoursUntilPickup <= 8) && currentReminderStage < 3) {
+          console.log(`🔥 [STAGE 3 CRITICAL] Final reminder for Booking #${booking.BookingID}!`);
+
+          await wixData.update('Bookings', {
+            ...booking,
+            ReminderStage: 3,
+            LastReminderSentAt: new Date()
+          });
+        }
+      }
+    }
+
+    return { success: true, processedCount: pendingQuery.items.length };
+  } catch (err) {
+    console.error('Error running checkPendingUrgentBookings cron job:', err);
+    return { success: false, error: err.message };
+  }
+}

@@ -13,10 +13,14 @@ $w.onReady(async function () {
   const embedElement = $w('#htmlEmbed') || $w('#html1');
 
   // =========================================================================
-  // PAYMENT MODE TOGGLE:
-  // false = TEST MODE (Bypasses payment gateway; saves directly to CMS as CONFIRMED)
-  // true  = LIVE MODE (Opens Wix Checkout with Credit Card / Apple Pay)
+  // SUBMISSION & PAYMENT WORKFLOW CONFIGURATION:
+  // 'REVIEW_FIRST'    = (RECOMMENDED) Customer submits request -> Saves as PENDING_APPROVAL
+  //                     Owner reviews in Wix CMS -> Changes to CONFIRMED or checks IsApproved: true
+  //                     -> Triggers automated approval email to customer with payment/pickup details.
+  // 'INSTANT_PAY'     = Customer pays immediately upon submitting form via Wix Checkout modal.
+  // 'TEST_CONFIRM'    = Test mode (auto-confirms without payment or owner approval).
   // =========================================================================
+  const WORKFLOW_MODE = 'REVIEW_FIRST';
   const ENABLE_LIVE_PAYMENT = false;
 
   // Helper: Convert any date representation to YYYY-MM-DD
@@ -198,7 +202,9 @@ $w.onReady(async function () {
           SecurityDepositAmount: Number(data.securityDeposit || 0),
           TotalCharged: Number(data.totalHold || 0),
           DepositStatus: 'Pending',
-          BookingStatus: 'PENDING_PAYMENT',
+          BookingStatus: 'PENDING_APPROVAL',
+          IsApproved: false,
+          PaymentStatus: 'UNPAID',
           IntendedUse: String(data.intendedUse || '').trim(),
           Notes: String(data.comments || '').trim(),
           ReturnInspectionPassed: false
@@ -206,12 +212,23 @@ $w.onReady(async function () {
 
         const savedBooking = await wixData.insert('Bookings', newBookingRecord);
 
-        // If in Test Mode, confirm booking immediately without waiting for payment gateway
-        if (!ENABLE_LIVE_PAYMENT) {
+        // MODE 1: REVIEW_FIRST (Standard Owner-Approval Business Model)
+        if (WORKFLOW_MODE === 'REVIEW_FIRST') {
+          embedElement.postMessage({
+            type: 'BOOKING_SUBMITTED_SUCCESS',
+            bookingId: data.bookingId,
+            message: `✔ Booking Request Received! Reservation #${data.bookingId} is pending owner review. You will receive a confirmation email once driver verification is complete.`
+          });
+          return;
+        }
+
+        // MODE 2: TEST_CONFIRM (Quick Testing without Payment)
+        if (WORKFLOW_MODE === 'TEST_CONFIRM' || (!ENABLE_LIVE_PAYMENT && WORKFLOW_MODE !== 'INSTANT_PAY')) {
           await wixData.update('Bookings', {
             ...newBookingRecord,
             _id: savedBooking._id,
             BookingStatus: 'CONFIRMED',
+            IsApproved: true,
             DepositStatus: 'Test Completed'
           });
 
@@ -223,7 +240,7 @@ $w.onReady(async function () {
           return;
         }
 
-        // 2. Create Wix Pay Order (Live Mode)
+        // MODE 3: INSTANT_PAY (Immediate Wix Online Checkout)
         let paymentOrder;
         try {
           paymentOrder = await createPaymentOrder(data);

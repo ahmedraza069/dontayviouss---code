@@ -5,6 +5,7 @@
  * 1. Single-Text Dynamic Breadcrumb: HOME > OUR TRAILERS > TRAILER #1
  * 2. Tiered Pricing with '$' (#daily, #weekend, #threeDay, #weekly, #monthly)
  * 3. Recommended Uses (#repeater1 -> #text2)
+ * 4. Technical Specifications (DeckDimensions, SideRailHeight, LoadingRamp, AxleSetup, CouplerSize, ElectricalPlug)
  */
 
 $w.onReady(function () {
@@ -33,7 +34,6 @@ function initTrailerPage(dataset) {
     // -------------------------------------------------------------
     // 1. SINGLE-TEXT DYNAMIC BREADCRUMB (HOME > OUR TRAILERS > TRAILER #1)
     // -------------------------------------------------------------
-    // Extracts clean trailer title: e.g. "TRAILER #1" or "TRAILER #2"
     let trailerShortName = 'TRAILER';
     if (item.TrailerNumber ?? item.trailerNumber) {
       trailerShortName = `TRAILER #${item.TrailerNumber ?? item.trailerNumber}`;
@@ -44,8 +44,6 @@ function initTrailerPage(dataset) {
         : fullTitle.toUpperCase();
     }
 
-    // Formats the entire breadcrumb inside a single HTML string
-    // Matches the visual: HOME (white) > (white) OUR TRAILERS (white) > (red) TRAILER #1 (red)
     const breadcrumbHtml = `<p style="font-weight: 700; margin: 0; line-height: 1.4;">` +
       `<a href="/" style="color: #FFFFFF; text-decoration: none;">HOME</a> ` +
       `<span style="color: #FFFFFF;">&gt;</span> ` +
@@ -54,7 +52,6 @@ function initTrailerPage(dataset) {
       `<span style="color: #E60000;">${trailerShortName}</span>` +
     `</p>`;
 
-    // Target your single breadcrumb text element ID (change '#breadcrumb' if your text ID is different)
     const breadcrumbElement = $w('#breadcrumb') || $w('#breadcrumbs') || $w('#textBreadcrumb') || $w('#breadcrumbText');
     if (breadcrumbElement) {
       breadcrumbElement.html = breadcrumbHtml;
@@ -106,6 +103,24 @@ function initTrailerPage(dataset) {
         title: u
       }));
     }
+
+    // -------------------------------------------------------------
+    // 4. TECHNICAL SPECIFICATIONS (Fail-Safe Dynamic Population)
+    // -------------------------------------------------------------
+    const deckDim = item.DeckDimensions ?? item.deckDimensions ?? item.dimensions ?? '6 ft Wide x 12 ft Long';
+    const sideRail = item.SideRailHeight ?? item.sideRailHeight ?? '18" Heavy Duty Steel Mesh';
+    const ramp = item.LoadingRamp ?? item.loadingRamp ?? '4-Foot Fold-Down Ramp Tailgate';
+    const axle = item.AxleSetup ?? item.axleSetup ?? 'Tandem Dual Axles with Chrome Rims';
+    const coupler = item.CouplerSize ?? item.couplerSize ?? '2" Ball Coupler with Safety Chains';
+    const electrical = item.ElectricalPlug ?? item.electricalPlug ?? item.Electrical ?? 'Standard 4-Pin Flat Connector (LED Lights)';
+
+    // Binds to elements if present on page
+    if ($w('#deckDimensions')) $w('#deckDimensions').text = deckDim;
+    if ($w('#sideRailHeight')) $w('#sideRailHeight').text = sideRail;
+    if ($w('#loadingRamp')) $w('#loadingRamp').text = ramp;
+    if ($w('#axleSetup')) $w('#axleSetup').text = axle;
+    if ($w('#couplerSize') || $w('#hitchCoupler')) ($w('#couplerSize') || $w('#hitchCoupler')).text = coupler;
+    if ($w('#electricalPlug') || $w('#electrical')) ($w('#electricalPlug') || $w('#electrical')).text = electrical;
 
   } catch (err) {
     console.error('Error in initTrailerPage:', err);
