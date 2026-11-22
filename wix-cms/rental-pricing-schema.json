@@ -1,0 +1,23 @@
+{
+  "collectionName": "RentalPricing",
+  "displayName": "Rental Pricing Tiers",
+  "description": "5-Tier Rental Pricing Schedule for L&D Trailers in Corinth, MS (Daily, Weekend, 3-Day, Weekly, Monthly)",
+  "fields": [
+    { "fieldKey": "title", "displayName": "Title", "type": "Text", "description": "e.g. Daily Rental, Weekend Rental" },
+    { "fieldKey": "slug", "displayName": "Slug", "type": "Text", "description": "URL-friendly slug (e.g. daily-rental)" },
+    { "fieldKey": "tierId", "displayName": "Tier ID", "type": "Text", "description": "Internal identifier (daily, weekend, 3day, weekly, monthly)" },
+    { "fieldKey": "displayOrder", "displayName": "Display Order", "type": "Number", "description": "1 to 5 to control card sorting order" },
+    { "fieldKey": "duration", "displayName": "Duration", "type": "Text", "description": "e.g. 24 Hours Duration, Friday Through Sunday" },
+    { "fieldKey": "priceNumber", "displayName": "Price Number", "type": "Number", "description": "45, 85, 115, 225, 550" },
+    { "fieldKey": "priceFormatted", "displayName": "Price Formatted", "type": "Text", "description": "$45, $85, $115, $225, $550 (with dollar sign)" },
+    { "fieldKey": "depositNumber", "displayName": "Deposit Number", "type": "Number", "description": "100, 100, 100, 150, 200" },
+    { "fieldKey": "depositText", "displayName": "Deposit Text", "type": "Text", "description": "Deposit: $100 (Refundable)" },
+    { "fieldKey": "badge", "displayName": "Badge", "type": "Text", "description": "BEST VALUE, POPULAR, CONTRACTOR RATE" },
+    { "fieldKey": "isFeatured", "displayName": "Is Featured", "type": "Boolean", "description": "true for Weekend Rental (red highlight card)" },
+    { "fieldKey": "cardImage", "displayName": "Card Image", "type": "Image", "description": "Hero card header image URL" },
+    { "fieldKey": "buttonText", "displayName": "Button Text", "type": "Text", "description": "BOOK NOW" },
+    { "fieldKey": "bookNowLink", "displayName": "Book Now Link", "type": "URL", "description": "/booking?period=daily" },
+    { "fieldKey": "description", "displayName": "Description", "type": "Text", "description": "Short explanation of the rental period" },
+    { "fieldKey": "recommendedFor", "displayName": "Recommended For", "type": "Text", "description": "Target hauling jobs and use cases" }
+  ]
+}
